@@ -2,6 +2,7 @@ package com.hirshagarwal.theia.test;
 
 import static org.junit.Assert.*;
 
+import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -13,22 +14,24 @@ import org.junit.Test;
 import com.hirshagarwal.theia.Main.DisplayImage;
 
 public class DisplayImageTest {
-
+	
 	@Test
-	public void test() {
-		fail("Not yet implemented");
+	public void testSelectPointAdd(){
+		DisplayImage di = new DisplayImage(null);
+		di.addSelectPoint(1, 1);
+		assertEquals(di.getSelectPoints().size(), 1);
+		di.addSelectPoint(2, 2);
+		assertEquals(di.getSelectPoints().size(), 2);
 	}
 	
 	@Test
-	public void testCreation(){
-		BufferedImage sample = null;
-		try{
-			sample = ImageIO.read(new File("../Res/sample2.jpg"));
-		} catch (IOException e){
-			e.printStackTrace();
-		}
-
-		DisplayImage di = new DisplayImage(sample);
+	public void testSelectPointRemove(){
+		DisplayImage di = new DisplayImage(null);
+		di.addSelectPoint(1, 1);
+		di.addSelectPoint(2, 2);
+		assertEquals(di.getSelectPoints().size(), 2);
+		di.removeSelectPoint(2, 2);
+		assertEquals(di.getSelectPoints().size(), 1);
 	}
 
 }

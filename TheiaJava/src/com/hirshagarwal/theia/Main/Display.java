@@ -85,7 +85,8 @@ public class Display {
 	 * Draws an image with a grid on top so that the user can select crops from it.
 	 * @param image
 	 */
-	public void drawImage(BufferedImage image){		
+	public void drawImage(BufferedImage image){	
+		DisplayImage displayImage = new DisplayImage(image);
 		// Create image to draw grid lines on
 		BufferedImage gridImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g2d = gridImage.createGraphics();
