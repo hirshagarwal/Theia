@@ -135,7 +135,9 @@ public class Display {
 	}
 	
 	public void redrawImage(){
+		// Generate a new image based off selected points
 		BufferedImage currentImage = displayImage.generateCurrentImage();
+		// Scale down the image for display
 		Image tmp = currentImage.getScaledInstance((int)imagePaneSize.getWidth(), (int)imagePaneSize.getHeight(), Image.SCALE_SMOOTH);
 		imagePane.setImage(tmp);
 		imagePane.repaint();
