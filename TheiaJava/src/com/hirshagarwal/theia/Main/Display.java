@@ -47,6 +47,8 @@ public class Display {
 	// Global Fields
 	private JFrame frame;
 	private final JFileChooser fc = new JFileChooser();
+	DisplayImage displayImage;
+	ImagePanel imagePane = new ImagePanel();
 	
 	/***
 	 * Constructor to create the main display.
@@ -86,30 +88,14 @@ public class Display {
 	 * @param image
 	 */
 	public void drawImage(BufferedImage image){	
-		DisplayImage displayImage = new DisplayImage(image);
-		// Create image to draw grid lines on
-		BufferedImage gridImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
-		Graphics2D g2d = gridImage.createGraphics();
-		g2d.drawImage(image, 0, 0, null);
-		g2d.setBackground(Color.WHITE);
-		BasicStroke bs = new BasicStroke(2);
-		g2d.setStroke(bs);
-		
-		// Draw white grid lines
-		for(int i=0; i<gridSize+1; i++){
-			g2d.drawLine((image.getWidth()+2)/gridSize*i, 0, (image.getWidth()+2)/gridSize*i, image.getHeight()-1);
-			g2d.drawLine(0, (image.getHeight()+2)/gridSize*i, image.getWidth()-1, (image.getHeight()+2)/gridSize*i);
-		}
+		displayImage = new DisplayImage(image);
+		BufferedImage imageTest = displayImage.generateGridImage();
 		
 		// Resize Image
-		Image tmp = gridImage.getScaledInstance((int)imagePaneSize.getWidth(), (int)imagePaneSize.getHeight(), Image.SCALE_SMOOTH);
-		JPanel imagePane = new JPanel(){
-			@Override
-			protected void paintComponent(Graphics g){
-				super.paintComponent(g);
-				g.drawImage(tmp, 0, 0, null);
-			}
-		};
+		Image tmp = imageTest.getScaledInstance((int)imagePaneSize.getWidth(), (int)imagePaneSize.getHeight(), Image.SCALE_SMOOTH);
+//		Image tmp = imageTest;
+		imagePane.setImage(tmp);
+		imagePane.repaint();
 		
 		// Set the pane size in the layout
 		imagePane.setPreferredSize(imagePaneSize);
@@ -117,8 +103,12 @@ public class Display {
 		// Set image pane on-click actions
 		imagePane.addMouseListener(new MouseListener(){
 			public void mouseClicked(MouseEvent e){
-				System.out.println("Mouse location: " + e.getX() + ", " + e.getY());
-				
+				// TODO: Make the scaling value (5) dynamic based on how much the image is being scaled
+				int xLoc = ((int)(e.getX()*2)/100);
+				int yLoc = ((int)(e.getY()*2)/100);
+				System.out.println("Mouse location: " + xLoc + ", " + yLoc);
+				displayImage.addSelectPoint(xLoc, yLoc);
+				redrawImage();
 			}
 			
 			public void mouseEntered(MouseEvent e){
@@ -142,6 +132,13 @@ public class Display {
 		// Add the image pane to the frame
 		frame.add(imagePane);
 		frame.setVisible(true);
+	}
+	
+	public void redrawImage(){
+		BufferedImage currentImage = displayImage.generateCurrentImage();
+		Image tmp = currentImage.getScaledInstance((int)imagePaneSize.getWidth(), (int)imagePaneSize.getHeight(), Image.SCALE_SMOOTH);
+		imagePane.setImage(tmp);
+		imagePane.repaint();
 	}
 	
 }
