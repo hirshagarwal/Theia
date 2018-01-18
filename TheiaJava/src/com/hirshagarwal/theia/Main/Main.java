@@ -1,4 +1,4 @@
-package com.hirshagarwal.theia;
+package com.hirshagarwal.theia.Main;
 
 import java.awt.image.BufferedImage;
 import java.io.File;

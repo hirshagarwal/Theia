@@ -1,4 +1,4 @@
-package com.hirshagarwal.theia;
+package com.hirshagarwal.theia.Main;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -10,30 +10,55 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
+import javax.swing.event.MouseInputListener;
 
+
+/***
+ * Class to render the GUI for the entire software.
+ * @author Hirsh Agarwal
+ *
+ */
 public class Display {
 	
-	private JFrame frame;
+	// Parameters
+		// Window width and height
 	private final int width = 900;
 	private final int height = 700;
+		// Image display size
+	private final Dimension imagePaneSize = new Dimension(696, 520);
+		// Number of grid lines (gridSize x gridSize)
+	private final int gridSize = 10;
+
+	
+	// Global Fields
+	private JFrame frame;
 	private final JFileChooser fc = new JFileChooser();
 	
-	// Create the main display
+	/***
+	 * Constructor to create the main display.
+	 */
 	public Display(){
+		// Create a blank frame and define the dimensions
 		frame = new JFrame();
 		frame.setSize(width, height);
 		Container contentPane = frame.getContentPane();
 		contentPane.setLayout(new FlowLayout());
 
-		// Create the display elements
+		// Create select image button
 		JButton selectImageButton = new JButton("Select Image");
 		selectImageButton.setBounds(0, 0, 120, 40);
 		ActionListener selectImageAction = new ActionListener(){
@@ -48,6 +73,7 @@ public class Display {
 			}
 		};
 		selectImageButton.addActionListener(selectImageAction);
+		
 		frame.add(selectImageButton);
 		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 //		frame.setLayout(null);
@@ -59,10 +85,7 @@ public class Display {
 	 * Draws an image with a grid on top so that the user can select crops from it.
 	 * @param image
 	 */
-	public void drawImage(BufferedImage image){
-		Dimension imagePaneSize = new Dimension(696, 520);
-		int gridSize = 10;
-		
+	public void drawImage(BufferedImage image){		
 		// Create image to draw grid lines on
 		BufferedImage gridImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g2d = gridImage.createGraphics();
@@ -78,7 +101,6 @@ public class Display {
 		}
 		
 		// Resize Image
-		BufferedImage resizedImage = new BufferedImage((int)imagePaneSize.getWidth(), (int)imagePaneSize.getHeight(), BufferedImage.TYPE_INT_ARGB);
 		Image tmp = gridImage.getScaledInstance((int)imagePaneSize.getWidth(), (int)imagePaneSize.getHeight(), Image.SCALE_SMOOTH);
 		JPanel imagePane = new JPanel(){
 			@Override
@@ -87,7 +109,36 @@ public class Display {
 				g.drawImage(tmp, 0, 0, null);
 			}
 		};
+		
+		// Set the pane size in the layout
 		imagePane.setPreferredSize(imagePaneSize);
+		
+		// Set image pane on-click actions
+		imagePane.addMouseListener(new MouseListener(){
+			public void mouseClicked(MouseEvent e){
+				System.out.println("Mouse location: " + e.getX() + ", " + e.getY());
+				
+			}
+			
+			public void mouseEntered(MouseEvent e){
+
+			}
+			
+			public void mouseExited(MouseEvent e){
+
+			}
+			
+			public void mouseReleased(MouseEvent e){
+				
+			}
+			
+			public void mousePressed(MouseEvent e){
+				
+			}
+			
+		});
+		
+		// Add the image pane to the frame
 		frame.add(imagePane);
 		frame.setVisible(true);
 	}
