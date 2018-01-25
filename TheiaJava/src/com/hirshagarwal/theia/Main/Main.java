@@ -21,6 +21,8 @@ public class Main {
 	private static ArrayList<File> exportDirectories = new ArrayList<>();
 	private static ArrayList<String> exportTitles = new ArrayList<>();
 	private static int startingNumber;
+	// TODO: Allow user to change crop size
+	private static int cropSize = 100;
 	
 	// Start the interface
 	public static void main(String[] args){
@@ -114,6 +116,16 @@ public class Main {
 
 	public static void setStartingNumber(int startingNumber) {
 		Main.startingNumber = startingNumber;
+	}
+
+
+	public static int getCropSize() {
+		return cropSize;
+	}
+
+
+	public static void setCropSize(int cropSize) {
+		Main.cropSize = cropSize;
 	}
 	
 

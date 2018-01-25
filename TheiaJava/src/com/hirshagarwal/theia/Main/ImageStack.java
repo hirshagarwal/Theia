@@ -45,9 +45,9 @@ public class ImageStack {
 				for(int j=0; j<numPages; j++) {
 					Point currentCrop = crops.get(i);
 					BufferedImage currentPage = imageStack.get(j);
-					// TODO: Make crop size variable
 					System.out.println("Crop Points: " + currentCrop.getX() + ", " + currentCrop.getY());
-					BufferedImage pageCrop = currentPage.getSubimage((int)currentCrop.getX()*100, (int)currentCrop.getY()*100, 100, 100);
+					int cropSize = Main.getCropSize();
+					BufferedImage pageCrop = currentPage.getSubimage((int)currentCrop.getX()*cropSize, (int)currentCrop.getY()*cropSize, cropSize, cropSize);
 					writer.writeToSequence(new IIOImage(pageCrop, null, null), params);
 				}
 				

@@ -101,14 +101,14 @@ public class Display {
 		l.putConstraint(SpringLayout.NORTH, selectImageButton, 5, SpringLayout.NORTH, contentPane);
 		l.putConstraint(SpringLayout.NORTH, selectCropImagesButton, 5, SpringLayout.SOUTH, selectImageButton);
 		l.putConstraint(SpringLayout.WEST, selectCropImagesButton, 5, SpringLayout.WEST, contentPane);
-		l.putConstraint(SpringLayout.NORTH, cropImageButton, 5, SpringLayout.SOUTH, selectCropImagesButton);
-		l.putConstraint(SpringLayout.WEST, cropImageButton, 5, SpringLayout.WEST, contentPane);
-		l.putConstraint(SpringLayout.NORTH, selectedImagePaths, 15, SpringLayout.SOUTH, cropImageButton);
+		l.putConstraint(SpringLayout.NORTH, cropImageButton, 5, SpringLayout.SOUTH, selectedImagePaths);
+		l.putConstraint(SpringLayout.WEST, cropImageButton, 5, SpringLayout.EAST, startingNumber);
+		l.putConstraint(SpringLayout.NORTH, selectedImagePaths, 15, SpringLayout.SOUTH, selectCropImagesButton);
 		l.putConstraint(SpringLayout.WEST, selectedImagePaths, 5, SpringLayout.WEST, contentPane);
 		l.putConstraint(SpringLayout.NORTH, startingNumber, 5, SpringLayout.SOUTH, selectedImagePaths);
 		l.putConstraint(SpringLayout.WEST, startingNumber, 5, SpringLayout.WEST, contentPane);
-		l.putConstraint(SpringLayout.WEST, resetSelectedOutputButton, 5, SpringLayout.EAST, startingNumber);
-		l.putConstraint(SpringLayout.NORTH, resetSelectedOutputButton, 5, SpringLayout.SOUTH, startingNumber);
+		l.putConstraint(SpringLayout.WEST, resetSelectedOutputButton, 5, SpringLayout.EAST, selectCropImagesButton);
+		l.putConstraint(SpringLayout.NORTH, resetSelectedOutputButton, 5, SpringLayout.SOUTH, selectImageButton);
 
 		
 		// Create the button action listeners  
@@ -174,7 +174,7 @@ public class Display {
 		File file2 = new File("");
 		if(returnVal == JFileChooser.APPROVE_OPTION) {
 			file = fc.getSelectedFile();
-			// Iterate through all of the selected files and add to list
+			// TODO: Verify that file is .tif
 			imagesToCrop.add(file);
 		}
 		
@@ -209,6 +209,7 @@ public class Display {
 	private void resetSelected(ActionEvent e) {
 		imagesToCrop.clear();
 		outputDirectories.clear();
+		Main.setExportDirectories(outputDirectories);
 		selectedImagePaths.setText("");
 	}
 	

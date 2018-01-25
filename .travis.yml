@@ -3,3 +3,4 @@ jdk:
   - oraclejdk8
 before_script: cd TheiaJava
 script: ant build
+ant test
