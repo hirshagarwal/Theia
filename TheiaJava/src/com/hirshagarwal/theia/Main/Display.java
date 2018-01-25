@@ -46,9 +46,15 @@ public class Display {
 	
 	// Global Fields
 	private JFrame frame;
-	private final JFileChooser fc = new JFileChooser();
+	private JButton cropImageButton;
+	
+	// TODO: Remove default file path
+//	private final JFileChooser fc = new JFileChooser();
+	private final JFileChooser fc = new JFileChooser("C:\\Users\\hirsh\\Documents\\Research\\Year 2\\Samples\\Sample 1");
+	
 	DisplayImage displayImage;
 	ImagePanel imagePane = new ImagePanel();
+	
 	
 	/***
 	 * Constructor to create the main display.
@@ -62,24 +68,45 @@ public class Display {
 
 		// Create select image button
 		JButton selectImageButton = new JButton("Select Image");
+		cropImageButton = new JButton("Crop Image");
 		selectImageButton.setBounds(0, 0, 120, 40);
+		cropImageButton.setBounds(0, 150, 120, 40);
+		
+		// Create the button action listeners  
 		ActionListener selectImageAction = new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				// Set the image action
-				int returnVal = fc.showOpenDialog(frame);
-				if(returnVal == JFileChooser.APPROVE_OPTION){
-					File file = fc.getSelectedFile();
-					Main.setImageFile(file);
-					drawImage(Main.getCurrentImage());
-				}
+				selectImageAction(e);
 			}
 		};
+		ActionListener cropImageAction = new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				cropImageAction(e);
+			}
+		};
+
 		selectImageButton.addActionListener(selectImageAction);
+		cropImageButton.addActionListener(cropImageAction);
 		
 		frame.add(selectImageButton);
+		frame.add(cropImageButton);
+		cropImageButton.setVisible(false);
 		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-//		frame.setLayout(null);
 		frame.setVisible(true);
+	}
+	
+	private void selectImageAction(ActionEvent e) {
+		// Set the image action
+		int returnVal = fc.showOpenDialog(frame);
+		if(returnVal == JFileChooser.APPROVE_OPTION){
+			File file = fc.getSelectedFile();
+			Main.setImageFile(file);
+			drawImage(Main.getCurrentImage());
+			cropImageButton.setVisible(true);
+		}
+	}
+	
+	private void cropImageAction(ActionEvent e) {
+		
 	}
 	
 	
@@ -93,7 +120,6 @@ public class Display {
 		
 		// Resize Image
 		Image tmp = imageTest.getScaledInstance((int)imagePaneSize.getWidth(), (int)imagePaneSize.getHeight(), Image.SCALE_SMOOTH);
-//		Image tmp = imageTest;
 		imagePane.setImage(tmp);
 		imagePane.repaint();
 		
