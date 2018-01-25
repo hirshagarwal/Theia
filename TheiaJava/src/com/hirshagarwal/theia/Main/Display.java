@@ -47,10 +47,13 @@ public class Display {
 	// Global Fields
 	private JFrame frame;
 	private JButton cropImageButton;
+	private JButton selectCropImagesButton;
 	
 	// TODO: Remove default file path
 //	private final JFileChooser fc = new JFileChooser();
 	private final JFileChooser fc = new JFileChooser("C:\\Users\\hirsh\\Documents\\Research\\Year 2\\Samples\\Sample 1");
+	private final JFileChooser fcMulti = new JFileChooser("C:\\Users\\hirsh\\Documents\\Research\\Year 2\\Samples\\Sample 1");
+	
 	
 	DisplayImage displayImage;
 	ImagePanel imagePane = new ImagePanel();
@@ -68,9 +71,11 @@ public class Display {
 
 		// Create select image button
 		JButton selectImageButton = new JButton("Select Image");
+		selectCropImagesButton = new JButton("Select Images to Crop");
 		cropImageButton = new JButton("Crop Image");
 		selectImageButton.setBounds(0, 0, 120, 40);
 		cropImageButton.setBounds(0, 150, 120, 40);
+		selectCropImagesButton.setBounds(0, 300, 120, 40);
 		
 		// Create the button action listeners  
 		ActionListener selectImageAction = new ActionListener(){
@@ -106,7 +111,17 @@ public class Display {
 	}
 	
 	private void cropImageAction(ActionEvent e) {
-		
+		// Crop the image
+		fcMulti.setMultiSelectionEnabled(true);
+		fcMulti.setDialogTitle("Please Choose Files to Crop");
+		int returnVal = fcMulti.showOpenDialog(frame);
+		if(returnVal == JFileChooser.APPROVE_OPTION) {
+			File file[] = fcMulti.getSelectedFiles();
+			// Iterate through all of the selected files and add to list
+			for(int i=0; i<file.length; i++) {
+				Main.addFileToCrop(file[i]);
+			}
+		}
 	}
 	
 	
