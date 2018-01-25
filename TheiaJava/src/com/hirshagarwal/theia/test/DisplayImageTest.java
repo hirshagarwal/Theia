@@ -33,5 +33,10 @@ public class DisplayImageTest {
 		di.removeSelectPoint(2, 2);
 		assertEquals(di.getSelectPoints().size(), 1);
 	}
+	
+	@Test
+	public void failingTest() {
+		assertTrue(false);
+	}
 
 }
