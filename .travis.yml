@@ -1,5 +1,5 @@
 language: java
 jdk:
   - oraclejdk8
-cd TheiaJava
+before_script: cd TheiaJava
 script: ant build
