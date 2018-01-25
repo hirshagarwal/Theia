@@ -1,5 +1,6 @@
 package com.hirshagarwal.theia.Main;
 
+import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -60,6 +61,15 @@ public class Main {
 			e.printStackTrace();
 		}
 
+	}
+	
+	/**
+	 * Export all of the crops after they have been stored in main class
+	 */
+	public static void exportCrops(ArrayList<Point> points) {
+		for(int i=0; i<stacksToCrop.size(); i++) {
+			stacksToCrop.get(i).export(points);
+		}
 	}
 	
 	public static void setImageFile(File file){

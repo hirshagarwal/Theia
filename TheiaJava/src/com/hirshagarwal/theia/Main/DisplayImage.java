@@ -136,5 +136,9 @@ public class DisplayImage {
 	public void setGridSize(int gridSize){
 		this.gridSize = gridSize;
 	}
+	
+	public ArrayList<Point> getSelectedCrops(){
+		return selectedCrops;
+	}
 
 }

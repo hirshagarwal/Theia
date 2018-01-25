@@ -1,5 +1,6 @@
 package com.hirshagarwal.theia.Main;
 
+import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
@@ -16,6 +17,10 @@ public class ImageStack {
 	public void addToStack(BufferedImage newPage) {
 		imageStack.add(newPage);
 		numPages = imageStack.size();
+	}
+	
+	public void export(ArrayList<Point> crops) {
+		
 	}
 	
 

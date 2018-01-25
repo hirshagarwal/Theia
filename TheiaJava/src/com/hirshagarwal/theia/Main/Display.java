@@ -14,6 +14,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
@@ -48,6 +49,7 @@ public class Display {
 	private JFrame frame;
 	private JButton cropImageButton;
 	private JButton selectCropImagesButton;
+	private ArrayList<File> imagesToCrop = new ArrayList<>();
 	
 	// TODO: Remove default file path
 //	private final JFileChooser fc = new JFileChooser();
@@ -88,12 +90,18 @@ public class Display {
 				cropImageAction(e);
 			}
 		};
+		ActionListener selectImagesToCropAction = new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				selectImagesToCropAction(e);
+			}
+		};
 
 		selectImageButton.addActionListener(selectImageAction);
 		cropImageButton.addActionListener(cropImageAction);
 		
 		frame.add(selectImageButton);
 		frame.add(cropImageButton);
+		frame.add(selectCropImagesButton);
 		cropImageButton.setVisible(false);
 		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		frame.setVisible(true);
@@ -110,8 +118,7 @@ public class Display {
 		}
 	}
 	
-	private void cropImageAction(ActionEvent e) {
-		// Crop the image
+	private void selectImagesToCropAction(ActionEvent e) {
 		fcMulti.setMultiSelectionEnabled(true);
 		fcMulti.setDialogTitle("Please Choose Files to Crop");
 		int returnVal = fcMulti.showOpenDialog(frame);
@@ -119,9 +126,17 @@ public class Display {
 			File file[] = fcMulti.getSelectedFiles();
 			// Iterate through all of the selected files and add to list
 			for(int i=0; i<file.length; i++) {
-				Main.addFileToCrop(file[i]);
+				imagesToCrop.add(file[i]);
 			}
 		}
+	}
+	
+	private void cropImageAction(ActionEvent e) {
+		// TODO: Crop Images
+		for(int i=0; i<imagesToCrop.size(); i++) {
+			Main.addFileToCrop(imagesToCrop.get(i));
+		}
+		Main.exportCrops(displayImage.getSelectedCrops());
 	}
 	
 	
