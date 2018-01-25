@@ -37,7 +37,7 @@ public class ImageStack {
 			ImageWriter writer = ImageIO.getImageWritersByFormatName("TIFF").next();
 			
 			try {
-				ImageOutputStream output = ImageIO.createImageOutputStream(new File("C:\\Users\\hirsh\\Desktop\\image" + imageNum + " crop " + i + ".tiff"));
+				ImageOutputStream output = ImageIO.createImageOutputStream(new File(Main.getExportDirectory(imageNum).toPath() + "\\" + Main.getExportTitle(imageNum) + (Main.getStartingNumber() + i) + ".tiff"));
 				writer.setOutput(output);
 				ImageWriteParam params = writer.getDefaultWriteParam();
 				writer.prepareWriteSequence(null);

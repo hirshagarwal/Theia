@@ -18,6 +18,9 @@ public class Main {
 	private static Display mainDisplay;
 	private static BufferedImage imageFile;
 	private static ArrayList<ImageStack> stacksToCrop = new ArrayList<>();
+	private static ArrayList<File> exportDirectories = new ArrayList<>();
+	private static ArrayList<String> exportTitles = new ArrayList<>();
+	private static int startingNumber;
 	
 	// Start the interface
 	public static void main(String[] args){
@@ -85,6 +88,32 @@ public class Main {
 	
 	public static BufferedImage getCurrentImage(){
 		return imageFile;
+	}
+	
+	public static void setExportDirectories(ArrayList<File> dir) {
+		exportDirectories = dir;
+	}
+	
+	public static File getExportDirectory(int i) {
+		return exportDirectories.get(i);
+	}
+	
+	public static void addExportTitle(String title) {
+		exportTitles.add(title);
+	}
+	
+	public static String getExportTitle(int i) {
+		return exportTitles.get(i);
+	}
+
+
+	public static int getStartingNumber() {
+		return startingNumber;
+	}
+
+
+	public static void setStartingNumber(int startingNumber) {
+		Main.startingNumber = startingNumber;
 	}
 	
 
