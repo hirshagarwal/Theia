@@ -55,6 +55,7 @@ public class Main {
 			}
 			
 			stacksToCrop.add(currentStack);
+			currentStack.setImageNumber(stacksToCrop.size()-1);
 			System.out.println("File Added to List. " + stacksToCrop.size() + " stacks to crop.");
 			
 		} catch (IOException e) {

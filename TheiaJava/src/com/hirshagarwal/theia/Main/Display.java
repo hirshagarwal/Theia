@@ -24,6 +24,8 @@ import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 import javax.swing.event.MouseInputListener;
 
@@ -49,6 +51,7 @@ public class Display {
 	private JFrame frame;
 	private JButton cropImageButton;
 	private JButton selectCropImagesButton;
+	private JTextArea selectedImagePaths;
 	private ArrayList<File> imagesToCrop = new ArrayList<>();
 	
 	// TODO: Remove default file path
@@ -75,9 +78,11 @@ public class Display {
 		JButton selectImageButton = new JButton("Select Image");
 		selectCropImagesButton = new JButton("Select Images to Crop");
 		cropImageButton = new JButton("Crop Image");
+		selectedImagePaths = new JTextArea();
+		selectedImagePaths.setColumns(20);
 		selectImageButton.setBounds(0, 0, 120, 40);
-		cropImageButton.setBounds(0, 150, 120, 40);
-		selectCropImagesButton.setBounds(0, 300, 120, 40);
+		cropImageButton.setBounds(0, 300, 120, 40);
+		selectCropImagesButton.setBounds(0, 150, 120, 40);
 		
 		// Create the button action listeners  
 		ActionListener selectImageAction = new ActionListener(){
@@ -98,11 +103,16 @@ public class Display {
 
 		selectImageButton.addActionListener(selectImageAction);
 		cropImageButton.addActionListener(cropImageAction);
+		selectCropImagesButton.addActionListener(selectImagesToCropAction);
 		
 		frame.add(selectImageButton);
-		frame.add(cropImageButton);
 		frame.add(selectCropImagesButton);
+		frame.add(cropImageButton);
+		frame.add(selectedImagePaths);
 		cropImageButton.setVisible(false);
+		selectCropImagesButton.setVisible(false);
+		selectedImagePaths.setVisible(false);
+		selectedImagePaths.setEditable(false);
 		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		frame.setVisible(true);
 	}
@@ -113,8 +123,9 @@ public class Display {
 		if(returnVal == JFileChooser.APPROVE_OPTION){
 			File file = fc.getSelectedFile();
 			Main.setImageFile(file);
+			displayImage = null;
 			drawImage(Main.getCurrentImage());
-			cropImageButton.setVisible(true);
+			selectCropImagesButton.setVisible(true);
 		}
 	}
 	
@@ -125,10 +136,14 @@ public class Display {
 		if(returnVal == JFileChooser.APPROVE_OPTION) {
 			File file[] = fcMulti.getSelectedFiles();
 			// Iterate through all of the selected files and add to list
+			selectedImagePaths.setText("Images to Crop:");
 			for(int i=0; i<file.length; i++) {
 				imagesToCrop.add(file[i]);
+				selectedImagePaths.setText(selectedImagePaths.getText() + "\r\n" + file[i].toString());
 			}
 		}
+		selectedImagePaths.setVisible(true);
+		cropImageButton.setVisible(true);
 	}
 	
 	private void cropImageAction(ActionEvent e) {
