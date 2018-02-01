@@ -68,6 +68,15 @@ public class DisplayImage {
 	}
 	
 	/***
+	 * Sets all of the selected points at once
+	 * @param selectedPoints
+	 */
+	public void setSelectedPoints(ArrayList<Point> selectedPoints) {
+		selectedCrops.clear();
+		selectedCrops = selectedPoints;
+	}
+	
+	/***
 	 * Returns the arraylist of currently selected points
 	 * @return
 	 */

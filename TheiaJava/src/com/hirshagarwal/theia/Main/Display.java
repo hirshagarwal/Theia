@@ -45,7 +45,7 @@ public class Display {
 	
 	// Parameters
 		// Window width and height
-	private final int width = 1700;
+	private final int width = 1500;
 	private final int height = 700;
 		// Image display size
 	private final Dimension imagePaneSize = new Dimension(696, 520);
@@ -67,6 +67,7 @@ public class Display {
 	private JComboBox<File> selectFileOutput;
 	private JLabel selectedImagesLabel;
 	private JLabel selectedOutputLabel;
+	private JButton findPlaqueButton;
 	
 	// TODO: Remove default file path
 //	private final JFileChooser fc = new JFileChooser();
@@ -102,6 +103,7 @@ public class Display {
 		removeCropImageButton = new JButton("Remove Image to Crop");
 		selectedImagesLabel = new JLabel("Selected Images");
 		selectedOutputLabel = new JLabel("Selected Output");
+		findPlaqueButton = new JButton("Find Plaque");
 
 		
 		startingNumber.setColumns(4);
@@ -133,6 +135,8 @@ public class Display {
 		l.putConstraint(SpringLayout.NORTH, selectFileInput, 5, SpringLayout.SOUTH, selectCropImagesButton);
 		l.putConstraint(SpringLayout.NORTH, selectFileOutput, 5, SpringLayout.SOUTH, selectFileInput);
 		l.putConstraint(SpringLayout.WEST, selectFileOutput, 5, SpringLayout.EAST, selectedOutputLabel);
+		l.putConstraint(SpringLayout.NORTH, findPlaqueButton, 5, SpringLayout.SOUTH, imagePane);
+		l.putConstraint(SpringLayout.EAST, findPlaqueButton, 5, SpringLayout.EAST, contentPane);
 
 		
 		// Create the button action listeners  
@@ -166,6 +170,11 @@ public class Display {
 				changeImageSelectFocus(e);
 			}
 		};
+		ActionListener findPlaque = new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				findPlaqueAction(e);
+			}
+		};
 
 		selectImageButton.addActionListener(selectImageAction);
 		cropImageButton.addActionListener(cropImageAction);
@@ -173,6 +182,7 @@ public class Display {
 		resetSelectedOutputButton.addActionListener(resetSelectedOutput);
 		autoCropButton.addActionListener(autoCropAction);
 		selectFileInput.addActionListener(changeImageFocus);
+		findPlaqueButton.addActionListener(findPlaque);
 				
 		// Add all of the components to the JFrame
 		frame.add(selectImageButton);
@@ -185,8 +195,10 @@ public class Display {
 		frame.add(selectFileOutput);
 		frame.add(selectedImagesLabel);
 		frame.add(selectedOutputLabel);
+		frame.add(findPlaqueButton);
 		
 		// Choose which components to display
+		findPlaqueButton.setVisible(true);
 		selectedImagesLabel.setVisible(false);
 		selectedOutputLabel.setVisible(false);
 		removeCropImageButton.setVisible(false);
@@ -227,6 +239,18 @@ public class Display {
 	private void autoCrop(ActionEvent e) {
 		AutomatedCrop autoCrop = new AutomatedCrop();
 		autoCrop.cropImage(Main.getCurrentImage());
+	}
+	
+	private void findPlaqueAction(ActionEvent e) {
+		// Select AW7
+		fc.setDialogTitle("Select AW7 Channel");
+		int returnVal = fc.showOpenDialog(frame);
+		File f = null;
+		if (returnVal == JFileChooser.APPROVE_OPTION) {
+			f = fc.getSelectedFile();
+		}
+		
+		FindPlaque.findPlaque(f);
 	}
 	
 	private void selectImagesToCropAction(ActionEvent e) {
