@@ -15,6 +15,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Handler;
@@ -287,25 +289,55 @@ public class Display {
 	}
 	
 	private void cropImageAction(ActionEvent e) {
-		if (selectionMode.getSelectedIndex() == 0) {
-			// Add all of the output locations
-			outputDirectories.clear();
-			imagesToCrop.clear();
-			for (int i=0; i<selectFileOutput.getItemCount(); i++) {
-				outputDirectories.add(selectFileOutput.getItemAt(i));
-				imagesToCrop.add(selectFileInput.getItemAt(i));
-			}
-			Main.setExportDirectories(outputDirectories);
-			Main.setStartingNumber(Integer.parseInt(startingNumber.getText()));
-			for(int i=0; i<imagesToCrop.size(); i++) {
-				String s = (String) JOptionPane.showInputDialog(frame, "Enter the desired output filename: ", "Filename", JOptionPane.PLAIN_MESSAGE, null, null, "Crop");
-				Main.addExportTitle(s);
-				Main.addFileToCrop(imagesToCrop.get(i));
-			}
+		// Add all of the output locations
+		outputDirectories.clear();
+		imagesToCrop.clear();
+		for (int i=0; i<selectFileOutput.getItemCount(); i++) {
+			outputDirectories.add(selectFileOutput.getItemAt(i));
+			imagesToCrop.add(selectFileInput.getItemAt(i));
+		}
+		Main.setExportDirectories(outputDirectories);
+		int startingNumberInteger = Integer.parseInt(startingNumber.getText());
+		Main.setStartingNumber(startingNumberInteger);
+		for(int i=0; i<imagesToCrop.size(); i++) {
+			String s = (String) JOptionPane.showInputDialog(frame, "Enter the desired output filename: ", "Filename", JOptionPane.PLAIN_MESSAGE, null, null, "Crop");
+			Main.addExportTitle(s);
+			Main.addFileToCrop(imagesToCrop.get(i));
+		}
+		if(selectionMode.getSelectedIndex() == 0) {
 			Main.exportCrops(displayImage.getSelectedCrops());
 		} else if (selectionMode.getSelectedIndex() == 1) {
+			Main.exportCrops(displayImage.getNearCrops());
+			// Build CSV
+			ArrayList<CSV> csv = new ArrayList<>();
+			csv.add(new CSV("Name", "Number", "Near to Plaque"));
+			for(int i=0; i<displayImage.getNearCrops().size(); i++) {
+				csv.add(new CSV("Crop", i + startingNumberInteger + "", "Yes"));
+			}
+			
+			// Export Far Crops
+			Main.exportCrops(displayImage.getFarCrops());
+			for(int i=0; i<displayImage.getFarCrops().size(); i++) {
+				csv.add(new CSV("Crop", i + displayImage.getNearCrops().size() + startingNumberInteger + "", "No"));
+			}
+			
+			// Write the CSV File 
+			try {
+				PrintWriter pw = new PrintWriter(new File(outputDirectories.get(0) + "\\labels.csv"));
+				StringBuilder sb = new StringBuilder();
+				for(int i=0; i<csv.size(); i++) {
+					sb.append(csv.get(i).toString());
+				}
+				System.out.println(sb.toString());
+				pw.write(sb.toString());
+				pw.close();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+			
 			
 		}
+		
 		
 	}
 	

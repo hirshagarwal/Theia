@@ -218,5 +218,13 @@ public class DisplayImage {
 	public ArrayList<Point> getSelectedCrops(){
 		return selectedCrops;
 	}
+	
+	public ArrayList<Point> getNearCrops(){
+		return selectedNear;
+	}
+	
+	public ArrayList<Point> getFarCrops(){
+		return selectedFar;
+	}
 
 }
