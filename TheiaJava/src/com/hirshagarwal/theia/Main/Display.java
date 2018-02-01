@@ -68,6 +68,7 @@ public class Display {
 	private JLabel selectedImagesLabel;
 	private JLabel selectedOutputLabel;
 	private JButton findPlaqueButton;
+	private JComboBox<String> selectionMode;
 	
 	// TODO: Remove default file path
 //	private final JFileChooser fc = new JFileChooser();
@@ -104,6 +105,10 @@ public class Display {
 		selectedImagesLabel = new JLabel("Selected Images");
 		selectedOutputLabel = new JLabel("Selected Output");
 		findPlaqueButton = new JButton("Find Plaque");
+		selectionMode = new JComboBox();
+		
+		selectionMode.addItem("Manual");
+		selectionMode.addItem("Proximity");
 
 		
 		startingNumber.setColumns(4);
@@ -134,8 +139,8 @@ public class Display {
 		l.putConstraint(SpringLayout.NORTH, selectFileInput, 5, SpringLayout.SOUTH, selectCropImagesButton);
 		l.putConstraint(SpringLayout.NORTH, selectFileOutput, 5, SpringLayout.SOUTH, selectFileInput);
 		l.putConstraint(SpringLayout.WEST, selectFileOutput, 5, SpringLayout.EAST, selectedOutputLabel);
-		l.putConstraint(SpringLayout.NORTH, findPlaqueButton, 5, SpringLayout.SOUTH, imagePane);
-		l.putConstraint(SpringLayout.EAST, findPlaqueButton, 5, SpringLayout.EAST, contentPane);
+		l.putConstraint(SpringLayout.NORTH, selectionMode, 5, SpringLayout.SOUTH, imagePane);
+		l.putConstraint(SpringLayout.EAST, selectionMode, 5, SpringLayout.EAST, contentPane);
 
 		
 		// Create the button action listeners  
@@ -194,7 +199,8 @@ public class Display {
 		frame.add(selectFileOutput);
 		frame.add(selectedImagesLabel);
 		frame.add(selectedOutputLabel);
-		frame.add(findPlaqueButton);
+//		frame.add(findPlaqueButton);
+		frame.add(selectionMode);
 		
 		// Choose which components to display
 		findPlaqueButton.setVisible(true);
@@ -281,21 +287,26 @@ public class Display {
 	}
 	
 	private void cropImageAction(ActionEvent e) {
-		// Add all of the output locations
-		outputDirectories.clear();
-		imagesToCrop.clear();
-		for (int i=0; i<selectFileOutput.getItemCount(); i++) {
-			outputDirectories.add(selectFileOutput.getItemAt(i));
-			imagesToCrop.add(selectFileInput.getItemAt(i));
+		if (selectionMode.getSelectedIndex() == 0) {
+			// Add all of the output locations
+			outputDirectories.clear();
+			imagesToCrop.clear();
+			for (int i=0; i<selectFileOutput.getItemCount(); i++) {
+				outputDirectories.add(selectFileOutput.getItemAt(i));
+				imagesToCrop.add(selectFileInput.getItemAt(i));
+			}
+			Main.setExportDirectories(outputDirectories);
+			Main.setStartingNumber(Integer.parseInt(startingNumber.getText()));
+			for(int i=0; i<imagesToCrop.size(); i++) {
+				String s = (String) JOptionPane.showInputDialog(frame, "Enter the desired output filename: ", "Filename", JOptionPane.PLAIN_MESSAGE, null, null, "Crop");
+				Main.addExportTitle(s);
+				Main.addFileToCrop(imagesToCrop.get(i));
+			}
+			Main.exportCrops(displayImage.getSelectedCrops());
+		} else if (selectionMode.getSelectedIndex() == 1) {
+			
 		}
-		Main.setExportDirectories(outputDirectories);
-		Main.setStartingNumber(Integer.parseInt(startingNumber.getText()));
-		for(int i=0; i<imagesToCrop.size(); i++) {
-			String s = (String) JOptionPane.showInputDialog(frame, "Enter the desired output filename: ", "Filename", JOptionPane.PLAIN_MESSAGE, null, null, "Crop");
-			Main.addExportTitle(s);
-			Main.addFileToCrop(imagesToCrop.get(i));
-		}
-		Main.exportCrops(displayImage.getSelectedCrops());
+		
 	}
 	
 	private void resetAll() {
@@ -329,12 +340,28 @@ public class Display {
 		// Set image pane on-click actions
 		imagePane.addMouseListener(new MouseListener(){
 			public void mouseClicked(MouseEvent e){
-				// TODO: Make the scaling value (5) dynamic based on how much the image is being scaled
-				int xLoc = ((int)(e.getX()*2)/100);
-				int yLoc = ((int)(e.getY()*2)/100);
-				System.out.println("Mouse location: " + xLoc + ", " + yLoc);
-				displayImage.addSelectPoint(xLoc, yLoc);
-				redrawImage();
+				if(selectionMode.getSelectedIndex() == 0) {
+					// TODO: Make the scaling value (5) dynamic based on how much the image is being scaled
+					int xLoc = ((int)(e.getX()/50));
+					int yLoc = ((int)(e.getY()/50));
+					System.out.println("Mouse location: " + xLoc + ", " + yLoc);
+					displayImage.addSelectPoint(xLoc, yLoc);
+					redrawImage();
+				}
+				if(selectionMode.getSelectedIndex() == 1) {
+					int xLoc = ((int)(e.getX()/50));
+					int yLoc = ((int)(e.getY()/50));
+					System.out.println("Mouse location: " + xLoc + ", " + yLoc);
+					if(e.getButton() == 1) {
+						System.out.println("Mouse Button: " + 1);
+						displayImage.addNearPoint(xLoc, yLoc);
+					} else {
+						System.out.println("Mouse Button: Other");
+						displayImage.addFarPoint(xLoc, yLoc);
+					}
+					redrawImage();
+				}
+				
 			}
 			
 			public void mouseEntered(MouseEvent e){
@@ -360,13 +387,26 @@ public class Display {
 		frame.setVisible(true);
 	}
 	
-	public void redrawImage(){
+	public void redrawImage(){		
 		// Generate a new image based off selected points
-		BufferedImage currentImage = displayImage.generateCurrentImage();
-		// Scale down the image for display
-		Image tmp = currentImage.getScaledInstance((int)imagePaneSize.getWidth(), (int)imagePaneSize.getHeight(), Image.SCALE_SMOOTH);
-		imagePane.setImage(tmp);
-		imagePane.repaint();
+		if(selectionMode.getSelectedIndex() == 1) {
+			BufferedImage currentImage = displayImage.generateCurrentImageProximity();
+			// Scale down the image for display
+			Image tmp = currentImage.getScaledInstance((int)imagePaneSize.getWidth(), (int)imagePaneSize.getHeight(), Image.SCALE_SMOOTH);
+			imagePane.setImage(tmp);
+			imagePane.repaint();
+		} else if (selectionMode.getSelectedIndex() == 0) {
+			BufferedImage currentImage = displayImage.generateCurrentImage();
+			// Scale down the image for display
+			Image tmp = currentImage.getScaledInstance((int)imagePaneSize.getWidth(), (int)imagePaneSize.getHeight(), Image.SCALE_SMOOTH);
+			imagePane.setImage(tmp);
+			imagePane.repaint();
+		}
+		
+	}
+	
+	public String getSelectionMode() {
+		return selectionMode.getSelectedItem().toString();
 	}
 	
 }

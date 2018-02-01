@@ -22,6 +22,8 @@ public class DisplayImage {
 	
 	// Fields
 	private ArrayList<Point> selectedCrops = new ArrayList<Point>();
+	private ArrayList<Point> selectedNear = new ArrayList<Point>();
+	private ArrayList<Point> selectedFar = new ArrayList<Point>();
 	private int gridSize = 15;
 	
 	
@@ -34,6 +36,39 @@ public class DisplayImage {
 		this.rawImage = rawImage;
 	}
 	
+	
+	/**
+	 * Add a point near to a plaque
+	 * Only applicable in proximity mode
+	 * @param x
+	 * @param y
+	 */
+	public void addNearPoint(int x, int y) {
+		Point newPoint = new Point(x, y);
+		// Check if box is already selected
+		if(selectedNear.contains(newPoint)){
+			selectedNear.remove(newPoint);
+		} else {
+			selectedNear.add(newPoint);			
+		}
+	}
+	
+	/**
+	 * Add a point that's far away from a plaque
+	 * Only applicable in proximity mode
+	 * @param x
+	 * @param y
+	 */
+	public void addFarPoint(int x, int y) {
+		Point newPoint = new Point(x, y);
+		// Check if box is already selected
+		if(selectedFar.contains(newPoint)){
+			selectedFar.remove(newPoint);
+		} else {
+			selectedFar.add(newPoint);			
+		}
+		
+	}
 	/***
 	 * Adds a pair of points to the list of selected points
 	 * Input is simply an x,y pair specifying the box number starting at 0
@@ -127,6 +162,40 @@ public class DisplayImage {
 			Point currentCropPoint = selectedCropsIterator.next();
 			g2d.fillRect((int)currentCropPoint.getX()*100, (int)currentCropPoint.getY()*100, 100, 100);
 		}
+		return currentImage;
+	}
+	
+	/***
+	 * Generate an image with different colored selection boxes for when the program is running in proximity mode
+	 * @return
+	 */
+	public BufferedImage generateCurrentImageProximity() {
+		// Make new blank bufferedImage
+		currentImage = new BufferedImage(rawImage.getWidth(), rawImage.getHeight(), BufferedImage.TYPE_INT_ARGB);
+		// Create Graphics2D Object for new bufferedImage
+		Graphics2D g2d = currentImage.createGraphics();
+		// Use grid image as base
+		g2d.drawImage(gridImage, 0, 0, null);
+		// Set the current color
+		Color overlayNear = new Color(0, 50, 255, 100);
+		g2d.setColor(overlayNear);
+		
+		// Draw the near overlays
+		Iterator<Point>selectedCropsIterator = selectedNear.iterator();
+		while(selectedCropsIterator.hasNext()) {
+			Point currentCropPoint = selectedCropsIterator.next();
+			g2d.fillRect((int)currentCropPoint.getX()*100, (int)currentCropPoint.getY()*100, 100, 100);
+		}
+		
+		// Draw the far overlays 
+		Color overlayFar = new Color(50, 255, 0, 100);
+		g2d.setColor(overlayFar);
+		selectedCropsIterator = selectedFar.iterator();
+		while(selectedCropsIterator.hasNext()) {
+			Point currentCropPoint = selectedCropsIterator.next();
+			g2d.fillRect((int)currentCropPoint.getX()*100, (int)currentCropPoint.getY()*100, 100, 100);
+		}
+		
 		return currentImage;
 	}
 	
