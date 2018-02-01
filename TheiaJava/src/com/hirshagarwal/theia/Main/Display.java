@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -22,8 +23,10 @@ import java.util.logging.Logger;
 
 import javax.swing.InputVerifier;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
@@ -42,8 +45,8 @@ public class Display {
 	
 	// Parameters
 		// Window width and height
-	private final int width = 1500;
-	private final int height = 900;
+	private final int width = 1700;
+	private final int height = 700;
 		// Image display size
 	private final Dimension imagePaneSize = new Dimension(696, 520);
 		// Number of grid lines (gridSize x gridSize)
@@ -59,6 +62,11 @@ public class Display {
 	private JTextField startingNumber = new JTextField();
 	private JButton resetSelectedOutputButton;
 	private JButton autoCropButton;
+	private JButton removeCropImageButton;
+	private JComboBox<File> selectFileInput;
+	private JComboBox<File> selectFileOutput;
+	private JLabel selectedImagesLabel;
+	private JLabel selectedOutputLabel;
 	
 	// TODO: Remove default file path
 //	private final JFileChooser fc = new JFileChooser();
@@ -84,18 +92,21 @@ public class Display {
 
 		// Create select image button
 		JButton selectImageButton = new JButton("Select Image");
-		selectCropImagesButton = new JButton("Add Images to Crop");
+		selectCropImagesButton = new JButton("Add Image to Crop");
 		cropImageButton = new JButton("Crop Image");
 		selectedImagePaths = new JTextArea();
 		resetSelectedOutputButton = new JButton("Reset Images to Crop");
 		autoCropButton = new JButton("Auto Crop");
+		selectFileInput = new JComboBox();
+		selectFileOutput = new JComboBox();
+		removeCropImageButton = new JButton("Remove Image to Crop");
+		selectedImagesLabel = new JLabel("Selected Images");
+		selectedOutputLabel = new JLabel("Selected Output");
+
 		
-		selectedImagePaths.setColumns(20);
 		startingNumber.setColumns(4);
 		startingNumber.setText("0");
-		selectImageButton.setBounds(0, 0, 120, 40);
-		cropImageButton.setBounds(0, 300, 120, 40);
-		selectCropImagesButton.setBounds(0, 150, 120, 40);
+
 		
 		// Layout Constraints
 		l.putConstraint(SpringLayout.EAST, imagePane, 5, SpringLayout.EAST, contentPane);
@@ -103,16 +114,25 @@ public class Display {
 		l.putConstraint(SpringLayout.NORTH, selectImageButton, 5, SpringLayout.NORTH, contentPane);
 		l.putConstraint(SpringLayout.NORTH, selectCropImagesButton, 5, SpringLayout.SOUTH, selectImageButton);
 		l.putConstraint(SpringLayout.WEST, selectCropImagesButton, 5, SpringLayout.WEST, contentPane);
-		l.putConstraint(SpringLayout.NORTH, cropImageButton, 5, SpringLayout.SOUTH, selectedImagePaths);
+		l.putConstraint(SpringLayout.NORTH, cropImageButton, 5, SpringLayout.SOUTH, selectFileOutput);
 		l.putConstraint(SpringLayout.WEST, cropImageButton, 5, SpringLayout.EAST, startingNumber);
-		l.putConstraint(SpringLayout.NORTH, selectedImagePaths, 15, SpringLayout.SOUTH, selectCropImagesButton);
-		l.putConstraint(SpringLayout.WEST, selectedImagePaths, 5, SpringLayout.WEST, contentPane);
-		l.putConstraint(SpringLayout.NORTH, startingNumber, 5, SpringLayout.SOUTH, selectedImagePaths);
+//		l.putConstraint(SpringLayout.NORTH, selectedImagePaths, 15, SpringLayout.SOUTH, selectCropImagesButton);
+		l.putConstraint(SpringLayout.WEST, removeCropImageButton, 5, SpringLayout.EAST, selectCropImagesButton);
+		l.putConstraint(SpringLayout.NORTH, removeCropImageButton, 5, SpringLayout.SOUTH, selectImageButton);
+		l.putConstraint(SpringLayout.NORTH, selectedImagesLabel, 5, SpringLayout.SOUTH, selectCropImagesButton);
+		l.putConstraint(SpringLayout.WEST, selectedImagesLabel, 5, SpringLayout.WEST, contentPane);
+		l.putConstraint(SpringLayout.WEST, selectedOutputLabel, 5, SpringLayout.WEST, contentPane);
+		l.putConstraint(SpringLayout.NORTH, selectedOutputLabel, 5, SpringLayout.SOUTH, selectFileInput);
+		l.putConstraint(SpringLayout.NORTH, startingNumber, 5, SpringLayout.SOUTH, selectFileOutput);
 		l.putConstraint(SpringLayout.WEST, startingNumber, 5, SpringLayout.WEST, contentPane);
 		l.putConstraint(SpringLayout.WEST, resetSelectedOutputButton, 5, SpringLayout.EAST, selectCropImagesButton);
 		l.putConstraint(SpringLayout.NORTH, resetSelectedOutputButton, 5, SpringLayout.SOUTH, selectImageButton);
 		l.putConstraint(SpringLayout.WEST, autoCropButton, 5, SpringLayout.EAST, selectCropImagesButton);
 		l.putConstraint(SpringLayout.NORTH, autoCropButton, 5, SpringLayout.SOUTH, selectImageButton);
+		l.putConstraint(SpringLayout.WEST, selectFileInput, 5, SpringLayout.EAST, selectedImagesLabel);
+		l.putConstraint(SpringLayout.NORTH, selectFileInput, 5, SpringLayout.SOUTH, selectCropImagesButton);
+		l.putConstraint(SpringLayout.NORTH, selectFileOutput, 5, SpringLayout.SOUTH, selectFileInput);
+		l.putConstraint(SpringLayout.WEST, selectFileOutput, 5, SpringLayout.EAST, selectedOutputLabel);
 
 		
 		// Create the button action listeners  
@@ -141,29 +161,50 @@ public class Display {
 				autoCrop(e);
 			}
 		};
+		ActionListener changeImageFocus = new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				changeImageSelectFocus(e);
+			}
+		};
 
 		selectImageButton.addActionListener(selectImageAction);
 		cropImageButton.addActionListener(cropImageAction);
 		selectCropImagesButton.addActionListener(selectImagesToCropAction);
 		resetSelectedOutputButton.addActionListener(resetSelectedOutput);
 		autoCropButton.addActionListener(autoCropAction);
-		
+		selectFileInput.addActionListener(changeImageFocus);
+				
+		// Add all of the components to the JFrame
 		frame.add(selectImageButton);
 		frame.add(selectCropImagesButton);
 		frame.add(cropImageButton);
-		frame.add(selectedImagePaths);
+		frame.add(removeCropImageButton);
 		frame.add(startingNumber);
-		frame.add(resetSelectedOutputButton);
 		frame.add(autoCropButton);
+		frame.add(selectFileInput);
+		frame.add(selectFileOutput);
+		frame.add(selectedImagesLabel);
+		frame.add(selectedOutputLabel);
+		
+		// Choose which components to display
+		selectedImagesLabel.setVisible(false);
+		selectedOutputLabel.setVisible(false);
+		removeCropImageButton.setVisible(false);
 		autoCropButton.setVisible(false);
 		cropImageButton.setVisible(false);
 		selectCropImagesButton.setVisible(false);
-		selectedImagePaths.setVisible(false);
-		selectedImagePaths.setEditable(false);
-		resetSelectedOutputButton.setVisible(false);
 		startingNumber.setVisible(false);
+		selectFileInput.setVisible(false);
+		selectFileOutput.setVisible(false);
 		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		frame.setVisible(true);
+	}
+	
+	private void changeImageSelectFocus(ActionEvent e) {
+		if (selectFileOutput.getItemCount() == selectFileInput.getItemCount()) {
+			int selectedInput = selectFileInput.getSelectedIndex();
+			selectFileOutput.setSelectedIndex(selectedInput);	
+		}
 	}
 	
 	private void selectImageAction(ActionEvent e) {
@@ -175,7 +216,11 @@ public class Display {
 			displayImage = null;
 			drawImage(Main.getCurrentImage());
 			selectCropImagesButton.setVisible(true);
-			autoCropButton.setVisible(true);
+			removeCropImageButton.setVisible(true);
+			selectFileInput.setVisible(true);
+			selectFileOutput.setVisible(true);
+			selectedImagesLabel.setVisible(true);
+			selectedOutputLabel.setVisible(true);
 		}
 	}
 	
@@ -194,6 +239,7 @@ public class Display {
 			file = fc.getSelectedFile();
 			// TODO: Verify that file is .tif
 			imagesToCrop.add(file);
+			selectFileInput.addItem(file);
 		}
 		
 		// Get Output Location
@@ -202,18 +248,24 @@ public class Display {
 		returnVal = directoryChooser.showOpenDialog(frame);
 		if(returnVal == JFileChooser.APPROVE_OPTION) {
 			file2 = directoryChooser.getSelectedFile();
-			outputDirectories.add(file2);
+//			outputDirectories.add(file2);
+			selectFileOutput.addItem(file2);
 		}
 		
 		selectedImagePaths.setText(selectedImagePaths.getText() + "\r\n" + file.toString() + "\r\n -> " + file2.toString());
 		
-		selectedImagePaths.setVisible(true);
 		cropImageButton.setVisible(true);
-		resetSelectedOutputButton.setVisible(true);
 		startingNumber.setVisible(true);
 	}
 	
 	private void cropImageAction(ActionEvent e) {
+		// Add all of the output locations
+		outputDirectories.clear();
+		imagesToCrop.clear();
+		for (int i=0; i<selectFileOutput.getItemCount(); i++) {
+			outputDirectories.add(selectFileOutput.getItemAt(i));
+			imagesToCrop.add(selectFileInput.getItemAt(i));
+		}
 		Main.setExportDirectories(outputDirectories);
 		Main.setStartingNumber(Integer.parseInt(startingNumber.getText()));
 		for(int i=0; i<imagesToCrop.size(); i++) {
@@ -222,6 +274,10 @@ public class Display {
 			Main.addFileToCrop(imagesToCrop.get(i));
 		}
 		Main.exportCrops(displayImage.getSelectedCrops());
+	}
+	
+	private void resetAll() {
+		// TODO: Create method to reset all of the data
 	}
 	
 	private void resetSelected(ActionEvent e) {
