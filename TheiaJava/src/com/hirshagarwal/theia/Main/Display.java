@@ -58,6 +58,7 @@ public class Display {
 	private ArrayList<File> outputDirectories = new ArrayList<>();
 	private JTextField startingNumber = new JTextField();
 	private JButton resetSelectedOutputButton;
+	private JButton autoCropButton;
 	
 	// TODO: Remove default file path
 //	private final JFileChooser fc = new JFileChooser();
@@ -87,6 +88,7 @@ public class Display {
 		cropImageButton = new JButton("Crop Image");
 		selectedImagePaths = new JTextArea();
 		resetSelectedOutputButton = new JButton("Reset Images to Crop");
+		autoCropButton = new JButton("Auto Crop");
 		
 		selectedImagePaths.setColumns(20);
 		startingNumber.setColumns(4);
@@ -109,6 +111,8 @@ public class Display {
 		l.putConstraint(SpringLayout.WEST, startingNumber, 5, SpringLayout.WEST, contentPane);
 		l.putConstraint(SpringLayout.WEST, resetSelectedOutputButton, 5, SpringLayout.EAST, selectCropImagesButton);
 		l.putConstraint(SpringLayout.NORTH, resetSelectedOutputButton, 5, SpringLayout.SOUTH, selectImageButton);
+		l.putConstraint(SpringLayout.WEST, autoCropButton, 5, SpringLayout.EAST, selectCropImagesButton);
+		l.putConstraint(SpringLayout.NORTH, autoCropButton, 5, SpringLayout.SOUTH, selectImageButton);
 
 		
 		// Create the button action listeners  
@@ -132,11 +136,17 @@ public class Display {
 				resetSelected(e);
 			}
 		};
+		ActionListener autoCropAction = new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				autoCrop(e);
+			}
+		};
 
 		selectImageButton.addActionListener(selectImageAction);
 		cropImageButton.addActionListener(cropImageAction);
 		selectCropImagesButton.addActionListener(selectImagesToCropAction);
 		resetSelectedOutputButton.addActionListener(resetSelectedOutput);
+		autoCropButton.addActionListener(autoCropAction);
 		
 		frame.add(selectImageButton);
 		frame.add(selectCropImagesButton);
@@ -144,6 +154,8 @@ public class Display {
 		frame.add(selectedImagePaths);
 		frame.add(startingNumber);
 		frame.add(resetSelectedOutputButton);
+		frame.add(autoCropButton);
+		autoCropButton.setVisible(false);
 		cropImageButton.setVisible(false);
 		selectCropImagesButton.setVisible(false);
 		selectedImagePaths.setVisible(false);
@@ -163,7 +175,13 @@ public class Display {
 			displayImage = null;
 			drawImage(Main.getCurrentImage());
 			selectCropImagesButton.setVisible(true);
+			autoCropButton.setVisible(true);
 		}
+	}
+	
+	private void autoCrop(ActionEvent e) {
+		AutomatedCrop autoCrop = new AutomatedCrop();
+		autoCrop.cropImage(Main.getCurrentImage());
 	}
 	
 	private void selectImagesToCropAction(ActionEvent e) {
