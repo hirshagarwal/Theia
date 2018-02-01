@@ -118,7 +118,6 @@ public class Display {
 		l.putConstraint(SpringLayout.WEST, selectCropImagesButton, 5, SpringLayout.WEST, contentPane);
 		l.putConstraint(SpringLayout.NORTH, cropImageButton, 5, SpringLayout.SOUTH, selectFileOutput);
 		l.putConstraint(SpringLayout.WEST, cropImageButton, 5, SpringLayout.EAST, startingNumber);
-//		l.putConstraint(SpringLayout.NORTH, selectedImagePaths, 15, SpringLayout.SOUTH, selectCropImagesButton);
 		l.putConstraint(SpringLayout.WEST, removeCropImageButton, 5, SpringLayout.EAST, selectCropImagesButton);
 		l.putConstraint(SpringLayout.NORTH, removeCropImageButton, 5, SpringLayout.SOUTH, selectImageButton);
 		l.putConstraint(SpringLayout.NORTH, selectedImagesLabel, 5, SpringLayout.SOUTH, selectCropImagesButton);
@@ -248,9 +247,8 @@ public class Display {
 		File f = null;
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 			f = fc.getSelectedFile();
+			FindPlaque.findPlaque(f);
 		}
-		
-		FindPlaque.findPlaque(f);
 	}
 	
 	private void selectImagesToCropAction(ActionEvent e) {

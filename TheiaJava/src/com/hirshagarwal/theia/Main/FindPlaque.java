@@ -18,7 +18,10 @@ import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
+import org.opencv.core.MatOfInt;
 import org.opencv.core.MatOfPoint;
+import org.opencv.core.Point;
+import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgcodecs.Imgcodecs;
@@ -31,6 +34,7 @@ public class FindPlaque {
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 		
 		Mat image = Imgcodecs.imread(imageFile.toString());
+		Mat originalImage = bufferedImageToMat(Main.getCurrentImage());
 		Mat newImage = new Mat();
 		Core.inRange(image, new Scalar(15, 15, 15), new Scalar(255, 255, 255), newImage);
 		
@@ -56,17 +60,19 @@ public class FindPlaque {
 	     for(int i=0; i<contours.size(); i++) {
 	    	 double contourArea = Imgproc.contourArea(contours.get(i));
 	    	 if(contourArea > maxContourSize) {
-	    		 System.out.println(i + ": Contour Area: " + contourArea);
 	    		 plaqueContouridx = i;
 	    		 maxContourSize = contourArea;
 	    	 }
 	     }
 	     
-	     Imgproc.drawContours(image, contours, plaqueContouridx, new Scalar(255,255,0));
+	     Imgproc.drawContours(originalImage, contours, plaqueContouridx, new Scalar(255,255,0));
+	     // Calculate Hull
+	     MatOfInt convexHull = new MatOfInt();
+	     Rect bounding = Imgproc.boundingRect(contours.get(plaqueContouridx));
+	     Imgproc.rectangle(originalImage, bounding.br(), bounding.tl(), new Scalar(0, 0, 255));
+	     Point[] contourPoints = contours.get(plaqueContouridx).toArray();
+	     showMat(originalImage);
 	     
-	     
-	     showMat(image);
-	     showMat(newImage);
 	}
 
 	
@@ -105,7 +111,7 @@ public class FindPlaque {
 	public static void showBufferedImage(BufferedImage im) {
 		JFrame f = new JFrame();
 		f.getContentPane().setLayout(new FlowLayout());
-		f.getContentPane().add(new JLabel(new ImageIcon(im.getScaledInstance(600, 500, 0))));
+		f.getContentPane().add(new JLabel(new ImageIcon(im.getScaledInstance(700, 500, 0))));
 		f.pack();
 		f.setVisible(true);
 		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
