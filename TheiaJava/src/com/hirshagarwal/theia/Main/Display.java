@@ -50,9 +50,10 @@ public class Display {
 	private final int width = 1500;
 	private final int height = 700;
 		// Image display size
-	private final Dimension imagePaneSize = new Dimension(696, 520);
-		// Number of grid lines (gridSize x gridSize)
-	private final int gridSize = 10;
+	private Dimension imagePaneSize = new Dimension(696, 520);
+	public static int scalingFactor = 2;
+	// Number of pixels in a single crop
+	public static final int cropSize = 100;
 	
 	// Global Fields
 	private JFrame frame;
@@ -243,6 +244,7 @@ public class Display {
 		if(returnVal == JFileChooser.APPROVE_OPTION){
 			File file = fc.getSelectedFile();
 			Main.setImageFile(file);
+			imagePaneSize.setSize(Main.getCurrentImage().getWidth()/scalingFactor, Main.getCurrentImage().getHeight()/scalingFactor);
 			displayImage = new DisplayImage(Main.getCurrentImage());
 			drawImage(Main.getCurrentImage());
 			selectCropImagesButton.setVisible(true);
@@ -280,7 +282,7 @@ public class Display {
 	 * Action performed when an image to crop is added
 	 * @param e
 	 */
-	private void selectImagesToCropAction(ActionEvent e) {
+	private void selectImagesToCropAction(ActionEvent e){
 		// Get File to Crop
 		fc.setDialogTitle("Please Choose File to Crop");
 		int returnVal = fc.showOpenDialog(frame);
@@ -288,9 +290,21 @@ public class Display {
 		File file2 = new File("");
 		if(returnVal == JFileChooser.APPROVE_OPTION) {
 			file = fc.getSelectedFile();
-			// TODO: Verify that file is .tif
+			
+			// Check to make sure that the file is a .tif/.tiff file
+			String filePath = fc.getSelectedFile().toString();
+			String extension = filePath.substring(filePath.indexOf('.'), filePath.length());
+			try {
+				if(!(extension.equalsIgnoreCase(".tif") || extension.equalsIgnoreCase(".tiff"))){
+					throw new IOException("Selected file not TIFF");
+				}
+			} catch(IOException ex) {
+				ex.printStackTrace();
+			}
+			
 			imagesToCrop.add(file);
-			selectFileInput.addItem(file);
+			selectFileInput.addItem(file);	
+			
 		}
 		
 		// Get Output Location
@@ -342,7 +356,6 @@ public class Display {
 
 			// Export Near Crops
 			Main.exportCrops(displayImage.getNearCrops());
-			int numExports = Main.getExportTitles().size();
 			// Build CSV
 			ArrayList<CSV> csv = new ArrayList<>();
 			csv.add(new CSV("Name", "Number", "Near to Plaque"));
@@ -353,7 +366,7 @@ public class Display {
 			
 			// Update the starting number so that the far crops continue the numbering
 			Main.setStartingNumber(startingNumberInteger + displayImage.getNearCrops().size());
-//			int updatedStartingNumber = startingNumberInteger + displayImage.getNearCrops().size();
+
 			// Export Far Crops
 			System.out.println("Far Crop Count: " + displayImage.getFarCrops().size());
 			Main.exportCrops(displayImage.getFarCrops());
@@ -418,16 +431,15 @@ public class Display {
 		imagePane.addMouseListener(new MouseListener(){
 			public void mouseClicked(MouseEvent e){
 				if(selectionMode.getSelectedIndex() == 0) {
-					// TODO: Make the scaling value (50) dynamic based on how much the image is being scaled
-					int xLoc = ((int)(e.getX()/50));
-					int yLoc = ((int)(e.getY()/50));
+					int xLoc = ((int)(e.getX()/(cropSize/scalingFactor)));
+					int yLoc = ((int)(e.getY()/(cropSize/scalingFactor)));
 					System.out.println("Mouse location: " + xLoc + ", " + yLoc);
 					displayImage.addSelectPoint(xLoc, yLoc);
 					redrawImage();
 				}
 				if(selectionMode.getSelectedIndex() == 1) {
-					int xLoc = ((int)(e.getX()/50));
-					int yLoc = ((int)(e.getY()/50));
+					int xLoc = ((int)(e.getX()/(cropSize/scalingFactor)));
+					int yLoc = ((int)(e.getY()/(cropSize/scalingFactor)));
 					System.out.println("Mouse location: " + xLoc + ", " + yLoc);
 					if(e.getButton() == 1) {
 						System.out.println("Mouse Button: " + 1);

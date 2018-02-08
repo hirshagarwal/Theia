@@ -21,7 +21,6 @@ public class Main {
 	private static ArrayList<File> exportDirectories = new ArrayList<>();
 	private static ArrayList<String> exportTitles = new ArrayList<>();
 	private static int startingNumber;
-	// TODO: Allow user to change crop size
 	private static int cropSize = 100;
 	public static boolean DEBUGGING = true;
 	
@@ -72,7 +71,7 @@ public class Main {
 	
 	public static void exportBufferedImage(BufferedImage toExport) {
 		
-		File outputfile = new File(exportDirectories.get(0) + "\\displayImage.jpeg");
+		File outputfile = new File(exportDirectories.get(0) + "\\selectedCrops.jpg");
 		try {
 			ImageIO.write(toExport, "jpg", outputfile);
 		} catch (IOException e) {

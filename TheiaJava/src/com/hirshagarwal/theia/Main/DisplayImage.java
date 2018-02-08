@@ -132,6 +132,11 @@ public class DisplayImage {
 		return selectedCrops;
 	}
 	
+	/**
+	 * Adds a crop to the existing image panel. This is much faster than redrawing the whole image every time.
+	 * @param near
+	 * @param newPoint
+	 */
 	private void redrawNewPoint(boolean near, Point newPoint) {
 		// Set the color depending on if the point is near or far
 		Color overlayColor;
@@ -142,13 +147,12 @@ public class DisplayImage {
 		}
 		
 		Graphics2D g2d = currentImage.createGraphics();
-		// TODO: Make size variable
 		g2d.setColor(Color.WHITE);
 		g2d.setFont(new Font("TimesRoman", Font.BOLD, textSize));
 		
-//		g2d.drawString("" + calculateGridNumber(newPoint), (int)newPoint.getX()*100+textOffsetX, (int)newPoint.getY()*100+textOffsetY);
+		int cropSize = Display.cropSize;
 		g2d.setColor(overlayColor);
-		g2d.fillRect((int) newPoint.getX()*100, (int) newPoint.getY()*100, 100, 100);
+		g2d.fillRect((int) newPoint.getX()*cropSize, (int) newPoint.getY()*cropSize, cropSize, cropSize);
 	}
 	
 	public int calculateGridNumber(Point newPoint) {
@@ -194,12 +198,11 @@ public class DisplayImage {
 		g2d.setBackground(Color.WHITE);
 		BasicStroke bs = new BasicStroke(2);
 		g2d.setStroke(bs);
-		
+		int cropSize = Display.cropSize;
 		// Draw white grid lines
 		for(int i=0; i<gridSize+1; i++){
-			// TODO: Make the grid size more variable
-			g2d.drawLine(100*i, 0, 100*i, rawImage.getHeight()-1);
-			g2d.drawLine(0, 100*i, rawImage.getWidth()-1, 100*i);
+			g2d.drawLine(cropSize*i, 0, cropSize*i, rawImage.getHeight()-1);
+			g2d.drawLine(0, cropSize*i, rawImage.getWidth()-1, cropSize*i);
 		}
 		
 		// Copy the grid image to currentImage
@@ -223,9 +226,10 @@ public class DisplayImage {
 		Color overlayColor = new Color(0, 255, 0, 100);
 		g2d.setColor(overlayColor);
 		Iterator<Point> selectedCropsIterator = selectedCrops.iterator();
+		int cropSize = Display.cropSize;
 		while(selectedCropsIterator.hasNext()){
 			Point currentCropPoint = selectedCropsIterator.next();
-			g2d.fillRect((int)currentCropPoint.getX()*100, (int)currentCropPoint.getY()*100, 100, 100);
+			g2d.fillRect((int)currentCropPoint.getX()*cropSize, (int)currentCropPoint.getY()*cropSize, cropSize, cropSize);
 		}
 		return currentImage;
 	}
@@ -253,7 +257,8 @@ public class DisplayImage {
 			g2d.setFont(new Font("TimesRoman", Font.BOLD, textSize));
 //			g2d.drawString("" + calculateGridNumber(currentCropPoint), (int)currentCropPoint.getX()*100+textOffsetX, (int)currentCropPoint.getY()*100+textOffsetY);
 			g2d.setColor(overlayNear);
-			g2d.fillRect((int)currentCropPoint.getX()*100, (int)currentCropPoint.getY()*100, 100, 100);
+			int cropSize = Display.cropSize;
+			g2d.fillRect((int)currentCropPoint.getX()*cropSize, (int)currentCropPoint.getY()*cropSize, cropSize, cropSize);
 		}
 		
 		// Draw the far overlays 
@@ -266,7 +271,8 @@ public class DisplayImage {
 			g2d.setFont(new Font("TimesRoman", Font.BOLD, textSize));
 //			g2d.drawString("" + calculateGridNumber(currentCropPoint), (int)currentCropPoint.getX()*100+textOffsetX, (int)currentCropPoint.getY()*100+textOffsetY);
 			g2d.setColor(overlayFar);
-			g2d.fillRect((int)currentCropPoint.getX()*100, (int)currentCropPoint.getY()*100, 100, 100);
+			int cropSize = Display.cropSize;
+			g2d.fillRect((int)currentCropPoint.getX()*cropSize, (int)currentCropPoint.getY()*cropSize, cropSize, cropSize);
 		}
 		
 		return currentImage;
