@@ -170,11 +170,6 @@ public class Display {
 				resetSelected(e);
 			}
 		};
-		ActionListener autoCropAction = new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				autoCrop(e);
-			}
-		};
 		ActionListener changeImageFocus = new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				changeImageSelectFocus(e);
@@ -185,14 +180,19 @@ public class Display {
 				removeImageToCropAction(e);
 			}
 		};
+		ActionListener changeSelectionMode = new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				changeSelectionModeAction(e);
+			}
+		};
 
 		selectImageButton.addActionListener(selectImageAction);
 		cropImageButton.addActionListener(cropImageAction);
 		selectCropImagesButton.addActionListener(selectImagesToCropAction);
 		resetSelectedOutputButton.addActionListener(resetSelectedOutput);
-		autoCropButton.addActionListener(autoCropAction);
 		selectFileInput.addActionListener(changeImageFocus);
 		removeCropImageButton.addActionListener(removeCropImage);
+		selectionMode.addActionListener(changeSelectionMode);
 				
 		// Add all of the components to the JFrame
 		frame.add(selectImageButton);
@@ -200,7 +200,6 @@ public class Display {
 		frame.add(cropImageButton);
 		frame.add(removeCropImageButton);
 		frame.add(startingNumber);
-		frame.add(autoCropButton);
 		frame.add(selectFileInput);
 		frame.add(selectFileOutput);
 		frame.add(selectedImagesLabel);
@@ -214,7 +213,6 @@ public class Display {
 		selectedImagesLabel.setVisible(false);
 		selectedOutputLabel.setVisible(false);
 		removeCropImageButton.setVisible(false);
-		autoCropButton.setVisible(false);
 		cropImageButton.setVisible(false);
 		selectCropImagesButton.setVisible(false);
 		startingNumber.setVisible(false);
@@ -245,7 +243,7 @@ public class Display {
 		if(returnVal == JFileChooser.APPROVE_OPTION){
 			File file = fc.getSelectedFile();
 			Main.setImageFile(file);
-			displayImage = null;
+			displayImage = new DisplayImage(Main.getCurrentImage());
 			drawImage(Main.getCurrentImage());
 			selectCropImagesButton.setVisible(true);
 			removeCropImageButton.setVisible(true);
@@ -254,6 +252,7 @@ public class Display {
 			selectedImagesLabel.setVisible(true);
 			selectedOutputLabel.setVisible(true);
 			selectionMode.setVisible(true);
+			frame.repaint();
 		}
 	}
 	
@@ -266,9 +265,15 @@ public class Display {
 		selectFileOutput.removeItemAt(selectFileOutput.getSelectedIndex());
 	}
 	
+	@Deprecated
 	private void autoCrop(ActionEvent e) {
 		AutomatedCrop autoCrop = new AutomatedCrop();
 		autoCrop.cropImage(Main.getCurrentImage());
+	}
+	
+	private void changeSelectionModeAction(ActionEvent e) {
+		displayImage.generateCurrentImageProximity();
+		redrawImage();
 	}
 	
 	/**
@@ -347,13 +352,14 @@ public class Display {
 			}
 			
 			// Update the starting number so that the far crops continue the numbering
-//			Main.setStartingNumber(startingNumberInteger + displayImage.getNearCrops().size());
-			int updatedStartingNumber = startingNumberInteger + displayImage.getNearCrops().size();
+			Main.setStartingNumber(startingNumberInteger + displayImage.getNearCrops().size());
+//			int updatedStartingNumber = startingNumberInteger + displayImage.getNearCrops().size();
 			// Export Far Crops
+			System.out.println("Far Crop Count: " + displayImage.getFarCrops().size());
 			Main.exportCrops(displayImage.getFarCrops());
 			// Iterate over each crop
 			for(int i=0; i<displayImage.getFarCrops().size(); i++) {
-				csv.add(new CSV(Main.getExportTitle(0), i + updatedStartingNumber + "", "No"));
+				csv.add(new CSV(Main.getExportTitle(0), i + Main.getStartingNumber() + "", "No"));
 			}
 			// Write the CSV File 
 			try {

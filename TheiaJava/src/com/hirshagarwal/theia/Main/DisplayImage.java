@@ -170,11 +170,11 @@ public class DisplayImage {
 		
 		// Draw the numbers for the near points
 		for (int i=0; i<selectedNear.size(); i++) {
-			g2d.drawString("" + (Main.getStartingNumber() + i), (int)selectedNear.get(i).getX()*100+textOffsetX, (int)selectedNear.get(i).getY()*100+textOffsetY);
+			g2d.drawString("" + (Main.getStartingNumber()-selectedNear.size() + i), (int)selectedNear.get(i).getX()*100+textOffsetX, (int)selectedNear.get(i).getY()*100+textOffsetY);
 		}
 		// Draw the numbers for the far points
 		for (int i=0; i<selectedFar.size(); i++) {
-			g2d.drawString("" + (Main.getStartingNumber() + i + selectedNear.size()), (int)selectedFar.get(i).getX()*100+textOffsetX, (int)selectedFar.get(i).getY()*100+textOffsetY);
+			g2d.drawString("" + (Main.getStartingNumber() + i), (int)selectedFar.get(i).getX()*100+textOffsetX, (int)selectedFar.get(i).getY()*100+textOffsetY);
 		}
 		
 		return outputImage;
