@@ -128,5 +128,9 @@ public class Main {
 		Main.cropSize = cropSize;
 	}
 	
+	public static ArrayList<String> getExportTitles() {
+		return exportTitles;
+	}
+	
 
 }

@@ -178,7 +178,6 @@ public class Display {
 		};
 		ActionListener findPlaque = new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				findPlaqueAction(e);
 			}
 		};
 
@@ -248,16 +247,6 @@ public class Display {
 		autoCrop.cropImage(Main.getCurrentImage());
 	}
 	
-	private void findPlaqueAction(ActionEvent e) {
-		// Select AW7
-		fc.setDialogTitle("Select AW7 Channel");
-		int returnVal = fc.showOpenDialog(frame);
-		File f = null;
-		if (returnVal == JFileChooser.APPROVE_OPTION) {
-			f = fc.getSelectedFile();
-			FindPlaque.findPlaque(f);
-		}
-	}
 	
 	private void selectImagesToCropAction(ActionEvent e) {
 		// Get File to Crop
@@ -307,20 +296,29 @@ public class Display {
 		if(selectionMode.getSelectedIndex() == 0) {
 			Main.exportCrops(displayImage.getSelectedCrops());
 		} else if (selectionMode.getSelectedIndex() == 1) {
+
+			// Export Near Crops
 			Main.exportCrops(displayImage.getNearCrops());
+			int numExports = Main.getExportTitles().size();
 			// Build CSV
 			ArrayList<CSV> csv = new ArrayList<>();
 			csv.add(new CSV("Name", "Number", "Near to Plaque"));
-			for(int i=0; i<displayImage.getNearCrops().size(); i++) {
-				csv.add(new CSV("Crop", i + startingNumberInteger + "", "Yes"));
+			for(int j=0; j<numExports; j++) {
+				for(int i=0; i<displayImage.getNearCrops().size(); i++) {
+					csv.add(new CSV(Main.getExportTitle(j), i + startingNumberInteger + "", "Yes"));
+				}
 			}
+			
+			// Update the starting number
+			Main.setStartingNumber(startingNumberInteger + displayImage.getNearCrops().size());
 			
 			// Export Far Crops
 			Main.exportCrops(displayImage.getFarCrops());
-			for(int i=0; i<displayImage.getFarCrops().size(); i++) {
-				csv.add(new CSV("Crop", i + displayImage.getNearCrops().size() + startingNumberInteger + "", "No"));
+			for(int j=0; j<numExports; j++) {	
+				for(int i=0; i<displayImage.getFarCrops().size(); i++) {
+					csv.add(new CSV(Main.getExportTitle(j), i + displayImage.getNearCrops().size() + startingNumberInteger + "", "No"));
+				}
 			}
-			
 			// Write the CSV File 
 			try {
 				PrintWriter pw = new PrintWriter(new File(outputDirectories.get(0) + "\\labels.csv"));
