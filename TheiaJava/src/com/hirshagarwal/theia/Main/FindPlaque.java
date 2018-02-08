@@ -18,9 +18,7 @@ import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
-import org.opencv.core.MatOfInt;
 import org.opencv.core.MatOfPoint;
-import org.opencv.core.Point;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
@@ -67,10 +65,8 @@ public class FindPlaque {
 	     
 	     Imgproc.drawContours(originalImage, contours, plaqueContouridx, new Scalar(255,255,0));
 	     // Calculate Hull
-	     MatOfInt convexHull = new MatOfInt();
 	     Rect bounding = Imgproc.boundingRect(contours.get(plaqueContouridx));
 	     Imgproc.rectangle(originalImage, bounding.br(), bounding.tl(), new Scalar(0, 0, 255));
-	     Point[] contourPoints = contours.get(plaqueContouridx).toArray();
 	     showMat(originalImage);
 	     
 	}

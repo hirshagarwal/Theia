@@ -155,6 +155,11 @@ public class DisplayImage {
 		g2d.fillRect((int) newPoint.getX()*cropSize, (int) newPoint.getY()*cropSize, cropSize, cropSize);
 	}
 	
+	/**
+	 * Calculate the grid number based off the coordinates
+	 * @param newPoint
+	 * @return
+	 */
 	public int calculateGridNumber(Point newPoint) {
 		int x = (int) newPoint.getX();
 		int y = (int) newPoint.getY();
@@ -162,9 +167,14 @@ public class DisplayImage {
 		return finalPoint;
 	}
 	
+	/**
+	 * Generate an output image with numbers on each selection region for a manual crop image (not proximity)
+	 * @return
+	 */
 	public BufferedImage generateManualOutputImage() {
 		BufferedImage outputImage = new BufferedImage(gridImage.getWidth(), gridImage.getHeight(), BufferedImage.TYPE_INT_RGB);
 		
+		// Create and setup graphics object
 		Graphics2D g2d = outputImage.createGraphics();
 		g2d.drawImage(currentImage, 0, 0, null);
 		g2d.setColor(Color.WHITE);
@@ -178,9 +188,15 @@ public class DisplayImage {
 		return outputImage;	
 	}
 	
+	
+	/**
+	 * Generate an output image with numbers on each selection region for a proximity crop image (with both regions near and far from plaques)
+	 * @return
+	 */
 	public BufferedImage generateOutputImage() {
 		BufferedImage outputImage = new BufferedImage(gridImage.getWidth(), gridImage.getHeight(), BufferedImage.TYPE_INT_RGB);
 		
+		// Create and setup graphics object
 		Graphics2D g2d = outputImage.createGraphics();
 		g2d.drawImage(currentImage, 0, 0, null);
 		g2d.setColor(Color.WHITE);

@@ -1,13 +1,8 @@
 package com.hirshagarwal.theia.Main;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
+
 import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -18,24 +13,17 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.logging.ConsoleHandler;
-import java.util.logging.Handler;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-import javax.swing.InputVerifier;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 import javax.swing.WindowConstants;
-import javax.swing.event.MouseInputListener;
 
 
 /***
@@ -86,7 +74,7 @@ public class Display {
 	 */
 	public Display(){
 		// Create a blank frame and define the dimensions
-		frame = new JFrame();
+		frame = new JFrame("Program");
 		frame.setSize(width, height);
 		Container contentPane = frame.getContentPane();
 //		contentPane.setLayout(new FlowLayout());
@@ -106,13 +94,13 @@ public class Display {
 		selectedImagePaths = new JTextArea();
 		resetSelectedOutputButton = new JButton("Reset Images to Crop");
 		autoCropButton = new JButton("Auto Crop");
-		selectFileInput = new JComboBox();
-		selectFileOutput = new JComboBox();
+		selectFileInput = new JComboBox<File>();
+		selectFileOutput = new JComboBox<File>();
 		removeCropImageButton = new JButton("Remove Image to Crop");
 		selectedImagesLabel = new JLabel("Selected Images");
 		selectedOutputLabel = new JLabel("Selected Output");
 		findPlaqueButton = new JButton("Find Plaque");
-		selectionMode = new JComboBox();
+		selectionMode = new JComboBox<String>();
 		
 		selectionMode.addItem("Manual");
 		selectionMode.addItem("Proximity");
@@ -274,6 +262,7 @@ public class Display {
 	}
 	
 	@Deprecated
+	@SuppressWarnings("unused")
 	private void autoCrop(ActionEvent e) {
 		AutomatedCrop autoCrop = new AutomatedCrop();
 		autoCrop.cropImage(Main.getCurrentImage());
@@ -367,7 +356,7 @@ public class Display {
 			
 			// Iterate over each crop
 			for(int i=0; i<displayImage.getSelectedCrops().size(); i++) {
-				csv.add(new CSV(Main.getExportTitle(0), i + startingNumberInteger + "", "No"));
+				csv.add(new CSV(Main.getExportTitle(0), i + startingNumberInteger + "", "0"));
 			}
 			
 			// Write the CSV File 
@@ -397,7 +386,7 @@ public class Display {
 			csv.add(new CSV("Name", "Number", "Near to Plaque"));
 			// Iterate over each crop
 			for(int i=0; i<displayImage.getNearCrops().size(); i++) {
-				csv.add(new CSV(Main.getExportTitle(0), i + startingNumberInteger + "", "Yes"));
+				csv.add(new CSV(Main.getExportTitle(0), i + startingNumberInteger + "", "1"));
 			}
 			
 			// Update the starting number so that the far crops continue the numbering
@@ -408,7 +397,7 @@ public class Display {
 			Main.exportCrops(displayImage.getFarCrops());
 			// Iterate over each crop
 			for(int i=0; i<displayImage.getFarCrops().size(); i++) {
-				csv.add(new CSV(Main.getExportTitle(0), i + Main.getStartingNumber() + "", "No"));
+				csv.add(new CSV(Main.getExportTitle(0), i + Main.getStartingNumber() + "", "0"));
 			}
 			// Write the CSV File 
 			try {
@@ -434,6 +423,7 @@ public class Display {
 	/**
 	 * Reset all of the data in the program so that a new image can be cropped
 	 */
+	@SuppressWarnings("unused")
 	private void resetAll() {
 		// TODO: Create method to reset all of the data
 	}

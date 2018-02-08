@@ -22,7 +22,7 @@ public class Main {
 	private static ArrayList<String> exportTitles = new ArrayList<>();
 	private static int startingNumber;
 	private static int cropSize = 100;
-	public static boolean DEBUGGING = true;
+	public static boolean DEBUGGING = false;
 	
 	// Start the interface
 	public static void main(String[] args){
