@@ -74,8 +74,9 @@ public class Display {
 	
 	// TODO: Remove default file path
 //	private final JFileChooser fc = new JFileChooser();
-	private final JFileChooser fc = new JFileChooser("C:\\Users\\hirsh\\Documents\\Research\\Year 2\\Samples\\Sample 1");
-	private final JFileChooser directoryChooser = new JFileChooser("C:\\Users\\hirsh\\Documents\\Research\\Year 2");
+	
+	private JFileChooser fc = new JFileChooser();
+	private JFileChooser directoryChooser = new JFileChooser();
 	
 	
 	DisplayImage displayImage;
@@ -93,6 +94,12 @@ public class Display {
 //		contentPane.setLayout(new FlowLayout());
 		SpringLayout l = new SpringLayout();
 		contentPane.setLayout(l);
+		
+		// Set the file choosers
+		if (Main.DEBUGGING) {
+			fc = new JFileChooser("C:\\Users\\hirsh\\Documents\\Research\\Year 2\\Samples\\Sample 1");
+			directoryChooser = new JFileChooser("C:\\Users\\hirsh\\Documents\\Research\\Year 2");
+		}
 
 		// Create select image button
 		JButton selectImageButton = new JButton("Select Image");
@@ -204,6 +211,7 @@ public class Display {
 		frame.add(selectionMode);
 		
 		// Choose which components to display
+		selectionMode.setVisible(false);
 		findPlaqueButton.setVisible(true);
 		selectedImagesLabel.setVisible(false);
 		selectedOutputLabel.setVisible(false);
@@ -239,6 +247,7 @@ public class Display {
 			selectFileOutput.setVisible(true);
 			selectedImagesLabel.setVisible(true);
 			selectedOutputLabel.setVisible(true);
+			selectionMode.setVisible(true);
 		}
 	}
 	

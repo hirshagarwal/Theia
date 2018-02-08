@@ -23,6 +23,7 @@ public class Main {
 	private static int startingNumber;
 	// TODO: Allow user to change crop size
 	private static int cropSize = 100;
+	public static boolean DEBUGGING = false;
 	
 	// Start the interface
 	public static void main(String[] args){
