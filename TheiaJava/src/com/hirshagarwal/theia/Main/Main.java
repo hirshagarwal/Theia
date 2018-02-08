@@ -69,10 +69,15 @@ public class Main {
 
 	}
 	
+	/**
+	 * Takes and saves a bufferedImage to the first selected directory
+	 * @param toExport
+	 */
 	public static void exportBufferedImage(BufferedImage toExport) {
-		
+		// Set the target directory and the target filename
 		File outputfile = new File(exportDirectories.get(0) + "\\selectedCrops.jpg");
 		try {
+			// Write the image to a jpeg file
 			ImageIO.write(toExport, "jpg", outputfile);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -88,6 +93,10 @@ public class Main {
 		}
 	}
 	
+	/**
+	 * Read an input image file
+	 * @param file
+	 */
 	public static void setImageFile(File file){
 		// Convert the file to an image
 		try{

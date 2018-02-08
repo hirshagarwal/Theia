@@ -162,9 +162,23 @@ public class DisplayImage {
 		return finalPoint;
 	}
 	
+	public BufferedImage generateManualOutputImage() {
+		BufferedImage outputImage = new BufferedImage(gridImage.getWidth(), gridImage.getHeight(), BufferedImage.TYPE_INT_RGB);
+		
+		Graphics2D g2d = outputImage.createGraphics();
+		g2d.drawImage(currentImage, 0, 0, null);
+		g2d.setColor(Color.WHITE);
+		g2d.setFont(new Font("TimesRoman", Font.BOLD, textSize));
+		
+		// Draw the numbers for the near points
+		for (int i=0; i<selectedCrops.size(); i++) {
+			g2d.drawString("" + (Main.getStartingNumber() + i), (int)selectedCrops.get(i).getX()*100+textOffsetX, (int)selectedCrops.get(i).getY()*100+textOffsetY);
+		}
+		
+		return outputImage;	
+	}
+	
 	public BufferedImage generateOutputImage() {
-		WritableRaster w = currentImage.copyData(null);
-//		BufferedImage outputImage = new BufferedImage(gridImage.getColorModel(), w, gridImage.isAlphaPremultiplied(), null);
 		BufferedImage outputImage = new BufferedImage(gridImage.getWidth(), gridImage.getHeight(), BufferedImage.TYPE_INT_RGB);
 		
 		Graphics2D g2d = outputImage.createGraphics();

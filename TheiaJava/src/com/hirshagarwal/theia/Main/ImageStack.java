@@ -31,6 +31,10 @@ public class ImageStack {
 		numPages = imageStack.size();
 	}
 	
+	/**
+	 * Take an Array List of points and export each crop from the current image stack.
+	 * @param crops
+	 */
 	public void export(ArrayList<Point> crops) {
 		// Iterate over all of crops
 		for(int i=0; i<crops.size(); i++) {
@@ -38,11 +42,13 @@ public class ImageStack {
 			ImageWriter writer = ImageIO.getImageWritersByFormatName("TIFF").next();
 			
 			try {
+				// Set the output parameters and file writer
 				ImageOutputStream output = ImageIO.createImageOutputStream(new File(Main.getExportDirectory(imageNum).toPath() + "\\" + Main.getExportTitle(imageNum) + (Main.getStartingNumber() + i) + ".tiff"));
 				writer.setOutput(output);
 				ImageWriteParam params = writer.getDefaultWriteParam();
 				writer.prepareWriteSequence(null);
 				
+				// Iterate over each page in the stack and cut out a crop
 				for(int j=0; j<numPages; j++) {
 					Point currentCrop = crops.get(i);
 					BufferedImage currentPage = imageStack.get(j);
@@ -60,6 +66,10 @@ public class ImageStack {
 		}
 	}
 	
+	/**
+	 * Set the base image number 
+	 * @param num
+	 */
 	public void setImageNumber(int num) {
 		imageNum = num;
 	}

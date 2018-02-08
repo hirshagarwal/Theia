@@ -224,18 +224,22 @@ public class Display {
 	}
 	
 	/**
-	 * Action performed when a different output image is selected from the dropdown box
+	 * Action performed when a different output image is selected from the dropdown box. It ensures that the selected input and output paths always match.
+	 * Although not a critical feature, it's more clear when they are syncronized.
 	 * @param e
 	 */
 	private void changeImageSelectFocus(ActionEvent e) {
 		if (selectFileOutput.getItemCount() == selectFileInput.getItemCount()) {
+			// Determine the new selected index for the input chooser
 			int selectedInput = selectFileInput.getSelectedIndex();
+			// Set the output chooser to match
 			selectFileOutput.setSelectedIndex(selectedInput);	
 		}
 	}
 	
 	/**
-	 * Action performed when an image for the display pane is selected
+	 * Action performed when an image for the display pane is selected.
+	 * Sets and resizes the image as well as displays all of the new necessary components.
 	 * @param e
 	 */
 	private void selectImageAction(ActionEvent e) {
@@ -247,6 +251,8 @@ public class Display {
 			imagePaneSize.setSize(Main.getCurrentImage().getWidth()/scalingFactor, Main.getCurrentImage().getHeight()/scalingFactor);
 			displayImage = new DisplayImage(Main.getCurrentImage());
 			drawImage(Main.getCurrentImage());
+			
+			// Turn on all of the relevant components
 			selectCropImagesButton.setVisible(true);
 			removeCropImageButton.setVisible(true);
 			selectFileInput.setVisible(true);
@@ -273,6 +279,10 @@ public class Display {
 		autoCrop.cropImage(Main.getCurrentImage());
 	}
 	
+	/**
+	 * When the selection mode is changed the selected crops will automatically be removed.
+	 * @param e
+	 */
 	private void changeSelectionModeAction(ActionEvent e) {
 		displayImage.generateCurrentImageProximity();
 		redrawImage();
@@ -350,7 +360,33 @@ public class Display {
 		// If in manual mode just export the images
 		if(selectionMode.getSelectedIndex() == 0) {
 			Main.exportCrops(displayImage.getSelectedCrops());
-		
+			
+			// Generate Excel File
+			ArrayList<CSV> csv = new ArrayList<>();
+			csv.add(new CSV("Name", "Number", "Near to Plaque"));
+			
+			// Iterate over each crop
+			for(int i=0; i<displayImage.getSelectedCrops().size(); i++) {
+				csv.add(new CSV(Main.getExportTitle(0), i + startingNumberInteger + "", "No"));
+			}
+			
+			// Write the CSV File 
+			try {
+				PrintWriter pw = new PrintWriter(new File(outputDirectories.get(0) + "\\labels.csv"));
+				StringBuilder sb = new StringBuilder();
+				for(int i=0; i<csv.size(); i++) {
+					sb.append(csv.get(i).toString());
+				}
+				System.out.println(sb.toString());
+				pw.write(sb.toString());
+				pw.close();
+				} catch (IOException e1) {
+					e1.printStackTrace();
+			}
+			
+			// Export numbered image
+			Main.exportBufferedImage(displayImage.generateManualOutputImage());
+			
 		// If in proximity mode
 		} else if (selectionMode.getSelectedIndex() == 1) {
 
@@ -395,6 +431,9 @@ public class Display {
 		
 	}
 	
+	/**
+	 * Reset all of the data in the program so that a new image can be cropped
+	 */
 	private void resetAll() {
 		// TODO: Create method to reset all of the data
 	}
@@ -431,6 +470,7 @@ public class Display {
 		imagePane.addMouseListener(new MouseListener(){
 			public void mouseClicked(MouseEvent e){
 				if(selectionMode.getSelectedIndex() == 0) {
+					// Gets the selected crop based on X and Y coordinates
 					int xLoc = ((int)(e.getX()/(cropSize/scalingFactor)));
 					int yLoc = ((int)(e.getY()/(cropSize/scalingFactor)));
 					System.out.println("Mouse location: " + xLoc + ", " + yLoc);
@@ -438,6 +478,7 @@ public class Display {
 					redrawImage();
 				}
 				if(selectionMode.getSelectedIndex() == 1) {
+					// Gets the selected crop based on X and Y coordinates
 					int xLoc = ((int)(e.getX()/(cropSize/scalingFactor)));
 					int yLoc = ((int)(e.getY()/(cropSize/scalingFactor)));
 					System.out.println("Mouse location: " + xLoc + ", " + yLoc);
@@ -476,6 +517,9 @@ public class Display {
 		frame.setVisible(true);
 	}
 	
+	/**
+	 * Show the current image from display image. This method works under the assumption that DisplayImage.currentImage is current.
+	 */
 	public void redrawImage(){		
 		// Generate a new image based off selected points
 		if(selectionMode.getSelectedIndex() == 1) {
@@ -495,6 +539,10 @@ public class Display {
 		
 	}
 	
+	/**
+	 * Output the current selection mode (either proximity or manual)
+	 * @return
+	 */
 	public String getSelectionMode() {
 		return selectionMode.getSelectedItem().toString();
 	}
