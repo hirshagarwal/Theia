@@ -23,7 +23,7 @@ public class Main {
 	private static int startingNumber;
 	// TODO: Allow user to change crop size
 	private static int cropSize = 100;
-	public static boolean DEBUGGING = false;
+	public static boolean DEBUGGING = true;
 	
 	// Start the interface
 	public static void main(String[] args){
@@ -68,6 +68,16 @@ public class Main {
 			e.printStackTrace();
 		}
 
+	}
+	
+	public static void exportBufferedImage(BufferedImage toExport) {
+		
+		File outputfile = new File(exportDirectories.get(0) + "\\displayImage.jpeg");
+		try {
+			ImageIO.write(toExport, "jpg", outputfile);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	/**

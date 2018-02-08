@@ -72,9 +72,6 @@ public class Display {
 	private JButton findPlaqueButton;
 	private JComboBox<String> selectionMode;
 	
-	// TODO: Remove default file path
-//	private final JFileChooser fc = new JFileChooser();
-	
 	private JFileChooser fc = new JFileChooser();
 	private JFileChooser directoryChooser = new JFileChooser();
 	
@@ -183,8 +180,9 @@ public class Display {
 				changeImageSelectFocus(e);
 			}
 		};
-		ActionListener findPlaque = new ActionListener() {
+		ActionListener removeCropImage = new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				removeImageToCropAction(e);
 			}
 		};
 
@@ -194,7 +192,7 @@ public class Display {
 		resetSelectedOutputButton.addActionListener(resetSelectedOutput);
 		autoCropButton.addActionListener(autoCropAction);
 		selectFileInput.addActionListener(changeImageFocus);
-		findPlaqueButton.addActionListener(findPlaque);
+		removeCropImageButton.addActionListener(removeCropImage);
 				
 		// Add all of the components to the JFrame
 		frame.add(selectImageButton);
@@ -226,6 +224,10 @@ public class Display {
 		frame.setVisible(true);
 	}
 	
+	/**
+	 * Action performed when a different output image is selected from the dropdown box
+	 * @param e
+	 */
 	private void changeImageSelectFocus(ActionEvent e) {
 		if (selectFileOutput.getItemCount() == selectFileInput.getItemCount()) {
 			int selectedInput = selectFileInput.getSelectedIndex();
@@ -233,6 +235,10 @@ public class Display {
 		}
 	}
 	
+	/**
+	 * Action performed when an image for the display pane is selected
+	 * @param e
+	 */
 	private void selectImageAction(ActionEvent e) {
 		// Set the image action
 		int returnVal = fc.showOpenDialog(frame);
@@ -251,12 +257,24 @@ public class Display {
 		}
 	}
 	
+	/**
+	 * Remove the currently selected items from the input and output boxes.
+	 * @param e
+	 */
+	private void removeImageToCropAction(ActionEvent e) {
+		selectFileInput.removeItemAt(selectFileInput.getSelectedIndex());
+		selectFileOutput.removeItemAt(selectFileOutput.getSelectedIndex());
+	}
+	
 	private void autoCrop(ActionEvent e) {
 		AutomatedCrop autoCrop = new AutomatedCrop();
 		autoCrop.cropImage(Main.getCurrentImage());
 	}
 	
-	
+	/**
+	 * Action performed when an image to crop is added
+	 * @param e
+	 */
 	private void selectImagesToCropAction(ActionEvent e) {
 		// Get File to Crop
 		fc.setDialogTitle("Please Choose File to Crop");
@@ -286,6 +304,10 @@ public class Display {
 		startingNumber.setVisible(true);
 	}
 	
+	/**
+	 * Action to crop the current images
+	 * @param e
+	 */
 	private void cropImageAction(ActionEvent e) {
 		// Add all of the output locations
 		outputDirectories.clear();
@@ -294,16 +316,23 @@ public class Display {
 			outputDirectories.add(selectFileOutput.getItemAt(i));
 			imagesToCrop.add(selectFileInput.getItemAt(i));
 		}
+		// Set the output directories from the selector box
 		Main.setExportDirectories(outputDirectories);
 		int startingNumberInteger = Integer.parseInt(startingNumber.getText());
 		Main.setStartingNumber(startingNumberInteger);
+		
+		// Iterate over all the images to crop to get a file name
 		for(int i=0; i<imagesToCrop.size(); i++) {
 			String s = (String) JOptionPane.showInputDialog(frame, "Enter the desired output filename: ", "Filename", JOptionPane.PLAIN_MESSAGE, null, null, "Crop");
 			Main.addExportTitle(s);
 			Main.addFileToCrop(imagesToCrop.get(i));
 		}
+		
+		// If in manual mode just export the images
 		if(selectionMode.getSelectedIndex() == 0) {
 			Main.exportCrops(displayImage.getSelectedCrops());
+		
+		// If in proximity mode
 		} else if (selectionMode.getSelectedIndex() == 1) {
 
 			// Export Near Crops
@@ -312,21 +341,19 @@ public class Display {
 			// Build CSV
 			ArrayList<CSV> csv = new ArrayList<>();
 			csv.add(new CSV("Name", "Number", "Near to Plaque"));
-			for(int j=0; j<numExports; j++) {
-				for(int i=0; i<displayImage.getNearCrops().size(); i++) {
-					csv.add(new CSV(Main.getExportTitle(j), i + startingNumberInteger + "", "Yes"));
-				}
+			// Iterate over each crop
+			for(int i=0; i<displayImage.getNearCrops().size(); i++) {
+				csv.add(new CSV(Main.getExportTitle(0), i + startingNumberInteger + "", "Yes"));
 			}
 			
-			// Update the starting number
-			Main.setStartingNumber(startingNumberInteger + displayImage.getNearCrops().size());
-			
+			// Update the starting number so that the far crops continue the numbering
+//			Main.setStartingNumber(startingNumberInteger + displayImage.getNearCrops().size());
+			int updatedStartingNumber = startingNumberInteger + displayImage.getNearCrops().size();
 			// Export Far Crops
 			Main.exportCrops(displayImage.getFarCrops());
-			for(int j=0; j<numExports; j++) {	
-				for(int i=0; i<displayImage.getFarCrops().size(); i++) {
-					csv.add(new CSV(Main.getExportTitle(j), i + displayImage.getNearCrops().size() + startingNumberInteger + "", "No"));
-				}
+			// Iterate over each crop
+			for(int i=0; i<displayImage.getFarCrops().size(); i++) {
+				csv.add(new CSV(Main.getExportTitle(0), i + updatedStartingNumber + "", "No"));
 			}
 			// Write the CSV File 
 			try {
@@ -341,10 +368,11 @@ public class Display {
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
-			
-			
-		}
 		
+			// Export the numbered image
+			Main.exportBufferedImage(displayImage.generateOutputImage());
+			
+		}		
 		
 	}
 	
@@ -352,6 +380,10 @@ public class Display {
 		// TODO: Create method to reset all of the data
 	}
 	
+	/**
+	 * Reset the currently selected output locations
+	 * @param e
+	 */
 	private void resetSelected(ActionEvent e) {
 		imagesToCrop.clear();
 		outputDirectories.clear();
@@ -380,7 +412,7 @@ public class Display {
 		imagePane.addMouseListener(new MouseListener(){
 			public void mouseClicked(MouseEvent e){
 				if(selectionMode.getSelectedIndex() == 0) {
-					// TODO: Make the scaling value (5) dynamic based on how much the image is being scaled
+					// TODO: Make the scaling value (50) dynamic based on how much the image is being scaled
 					int xLoc = ((int)(e.getX()/50));
 					int yLoc = ((int)(e.getY()/50));
 					System.out.println("Mouse location: " + xLoc + ", " + yLoc);
@@ -429,7 +461,8 @@ public class Display {
 	public void redrawImage(){		
 		// Generate a new image based off selected points
 		if(selectionMode.getSelectedIndex() == 1) {
-			BufferedImage currentImage = displayImage.generateCurrentImageProximity();
+//			BufferedImage currentImage = displayImage.generateCurrentImageProximity();
+			BufferedImage currentImage = displayImage.getCurrentImage();
 			// Scale down the image for display
 			Image tmp = currentImage.getScaledInstance((int)imagePaneSize.getWidth(), (int)imagePaneSize.getHeight(), Image.SCALE_SMOOTH);
 			imagePane.setImage(tmp);

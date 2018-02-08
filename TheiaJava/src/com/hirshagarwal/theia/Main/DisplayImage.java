@@ -1,10 +1,12 @@
 package com.hirshagarwal.theia.Main;
 
 import java.awt.image.BufferedImage;
+import java.awt.image.WritableRaster;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Point;
 
@@ -24,7 +26,12 @@ public class DisplayImage {
 	private ArrayList<Point> selectedCrops = new ArrayList<Point>();
 	private ArrayList<Point> selectedNear = new ArrayList<Point>();
 	private ArrayList<Point> selectedFar = new ArrayList<Point>();
-	private int gridSize = 15;
+	// Number of boxes to be drawn on the image. This only affects the number drawn, not the size.
+	private int gridSize = 14;
+	// Amount to offset text from corner
+	private int textOffsetX = 35;
+	private int textOffsetY = 60;
+	private int textSize = 32;
 	
 	
 	/***
@@ -48,8 +55,11 @@ public class DisplayImage {
 		// Check if box is already selected
 		if(selectedNear.contains(newPoint)){
 			selectedNear.remove(newPoint);
+			// Generate a new image to remove points
+			generateCurrentImageProximity();
 		} else {
-			selectedNear.add(newPoint);			
+			selectedNear.add(newPoint);
+			redrawNewPoint(true, newPoint);
 		}
 	}
 	
@@ -64,8 +74,11 @@ public class DisplayImage {
 		// Check if box is already selected
 		if(selectedFar.contains(newPoint)){
 			selectedFar.remove(newPoint);
+			// Generate a new image to remove points
+			generateCurrentImageProximity();
 		} else {
-			selectedFar.add(newPoint);			
+			selectedFar.add(newPoint);
+			redrawNewPoint(false, newPoint);
 		}
 		
 	}
@@ -119,6 +132,54 @@ public class DisplayImage {
 		return selectedCrops;
 	}
 	
+	private void redrawNewPoint(boolean near, Point newPoint) {
+		// Set the color depending on if the point is near or far
+		Color overlayColor;
+		if(near) {
+			overlayColor = new Color(0, 50, 255, 100);
+		} else {
+			overlayColor = new Color(50, 255, 0, 100);
+		}
+		
+		Graphics2D g2d = currentImage.createGraphics();
+		// TODO: Make size variable
+		g2d.setColor(Color.WHITE);
+		g2d.setFont(new Font("TimesRoman", Font.BOLD, textSize));
+		
+//		g2d.drawString("" + calculateGridNumber(newPoint), (int)newPoint.getX()*100+textOffsetX, (int)newPoint.getY()*100+textOffsetY);
+		g2d.setColor(overlayColor);
+		g2d.fillRect((int) newPoint.getX()*100, (int) newPoint.getY()*100, 100, 100);
+	}
+	
+	public int calculateGridNumber(Point newPoint) {
+		int x = (int) newPoint.getX();
+		int y = (int) newPoint.getY();
+		int finalPoint = gridSize*y + x;
+		return finalPoint;
+	}
+	
+	public BufferedImage generateOutputImage() {
+		WritableRaster w = currentImage.copyData(null);
+//		BufferedImage outputImage = new BufferedImage(gridImage.getColorModel(), w, gridImage.isAlphaPremultiplied(), null);
+		BufferedImage outputImage = new BufferedImage(gridImage.getWidth(), gridImage.getHeight(), BufferedImage.TYPE_INT_RGB);
+		
+		Graphics2D g2d = outputImage.createGraphics();
+		g2d.drawImage(currentImage, 0, 0, null);
+		g2d.setColor(Color.WHITE);
+		g2d.setFont(new Font("TimesRoman", Font.BOLD, textSize));
+		
+		// Draw the numbers for the near points
+		for (int i=0; i<selectedNear.size(); i++) {
+			g2d.drawString("" + (Main.getStartingNumber() + i), (int)selectedNear.get(i).getX()*100+textOffsetX, (int)selectedNear.get(i).getY()*100+textOffsetY);
+		}
+		// Draw the numbers for the far points
+		for (int i=0; i<selectedFar.size(); i++) {
+			g2d.drawString("" + (Main.getStartingNumber() + i + selectedNear.size()), (int)selectedFar.get(i).getX()*100+textOffsetX, (int)selectedFar.get(i).getY()*100+textOffsetY);
+		}
+		
+		return outputImage;
+	}
+	
 	/***
 	 * Generates an image with a grid on top
 	 * @return
@@ -140,6 +201,10 @@ public class DisplayImage {
 			g2d.drawLine(100*i, 0, 100*i, rawImage.getHeight()-1);
 			g2d.drawLine(0, 100*i, rawImage.getWidth()-1, 100*i);
 		}
+		
+		// Copy the grid image to currentImage
+		WritableRaster w = gridImage.copyData(null);
+		currentImage = new BufferedImage(gridImage.getColorModel(), w, gridImage.isAlphaPremultiplied(), null);
 		return gridImage;
 	}
 	
@@ -184,6 +249,10 @@ public class DisplayImage {
 		Iterator<Point>selectedCropsIterator = selectedNear.iterator();
 		while(selectedCropsIterator.hasNext()) {
 			Point currentCropPoint = selectedCropsIterator.next();
+			g2d.setColor(Color.WHITE);
+			g2d.setFont(new Font("TimesRoman", Font.BOLD, textSize));
+//			g2d.drawString("" + calculateGridNumber(currentCropPoint), (int)currentCropPoint.getX()*100+textOffsetX, (int)currentCropPoint.getY()*100+textOffsetY);
+			g2d.setColor(overlayNear);
 			g2d.fillRect((int)currentCropPoint.getX()*100, (int)currentCropPoint.getY()*100, 100, 100);
 		}
 		
@@ -193,6 +262,10 @@ public class DisplayImage {
 		selectedCropsIterator = selectedFar.iterator();
 		while(selectedCropsIterator.hasNext()) {
 			Point currentCropPoint = selectedCropsIterator.next();
+			g2d.setColor(Color.WHITE);
+			g2d.setFont(new Font("TimesRoman", Font.BOLD, textSize));
+//			g2d.drawString("" + calculateGridNumber(currentCropPoint), (int)currentCropPoint.getX()*100+textOffsetX, (int)currentCropPoint.getY()*100+textOffsetY);
+			g2d.setColor(overlayFar);
 			g2d.fillRect((int)currentCropPoint.getX()*100, (int)currentCropPoint.getY()*100, 100, 100);
 		}
 		
@@ -225,6 +298,14 @@ public class DisplayImage {
 	
 	public ArrayList<Point> getFarCrops(){
 		return selectedFar;
+	}
+	
+	public BufferedImage getCurrentImage() {
+		return currentImage;
+	}
+	
+	public int getGridSize() {
+		return gridSize;
 	}
 
 }
