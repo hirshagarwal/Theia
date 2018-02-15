@@ -46,7 +46,6 @@
     </target>
     <target depends="clean" name="cleanall"/>
     <target depends="build-subprojects,build-project" name="build">
-    	<antcall target="test-build"/>
    	</target>
     <target name="build-subprojects"/>
     <target depends="init" name="build-project">
