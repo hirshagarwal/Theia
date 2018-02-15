@@ -23,11 +23,18 @@ public class Main {
 	private static int cropSize = 100;
 	public static boolean DEBUGGING = true;
 	
-	// Start the interface
+	/**
+	 * Create a display window
+	 * @param args
+	 */
 	public static void main(String[] args){
 		setMainDisplay(new Display());
 	}
 	
+	/**
+	 * Make a new instance of the display window
+	 * This doesn't close the original window if one exists
+	 */
 	public static void restartDisplay() {
 		setMainDisplay(new Display());
 	}
@@ -61,7 +68,7 @@ public class Main {
 				BufferedImage newPage = tiffReader.read(i);
 				currentStack.addToStack(newPage);
 			}
-			
+			// Add the ROI to the list of stacks to crop
 			stacksToCrop.add(currentStack);
 			currentStack.setImageNumber(stacksToCrop.size()-1);
 			System.out.println("File Added to List. " + stacksToCrop.size() + " stacks to crop.");
@@ -109,6 +116,8 @@ public class Main {
 			e.printStackTrace();
 		}
 	}
+	
+	// Getters and Setters
 	
 	public static BufferedImage getCurrentImage(){
 		return imageFile;

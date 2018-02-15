@@ -108,6 +108,7 @@ public class Display {
 		guide = new JCheckBox("Guide");
 		resetAllButton = new JButton("Reset");
 		
+		// Create the two possible selection modes, one for manual cropping and one for "proximity" - which allows for near and far crops to be selected
 		selectionMode.addItem("Manual");
 		selectionMode.addItem("Proximity");
 
@@ -193,7 +194,8 @@ public class Display {
 				resetButtonAction(e);
 			}
 		};
-
+		
+		// Bind componenets to action listeners
 		selectImageButton.addActionListener(selectImageAction);
 		cropImageButton.addActionListener(cropImageAction);
 		selectCropImagesButton.addActionListener(selectImagesToCropAction);
@@ -214,7 +216,6 @@ public class Display {
 		frame.add(selectFileOutput);
 		frame.add(selectedImagesLabel);
 		frame.add(selectedOutputLabel);
-//		frame.add(findPlaqueButton);
 		frame.add(selectionMode);
 		frame.add(guide);
 		frame.add(resetAllButton);
@@ -231,6 +232,8 @@ public class Display {
 		selectFileInput.setVisible(false);
 		selectFileOutput.setVisible(false);
 		guide.setVisible(true);
+		
+		// Finally, setup the frame
 		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		frame.setVisible(true);
 	}
@@ -346,8 +349,9 @@ public class Display {
 			} catch(IOException ex) {
 				ex.printStackTrace();
 			}
-			
+			// Add the image file to the list of files to crop
 			imagesToCrop.add(file);
+			// Add the image to the drop-down box to select
 			selectFileInput.addItem(file);	
 			
 		}
@@ -362,14 +366,17 @@ public class Display {
 			selectFileOutput.addItem(file2);
 		}
 		
+		// Add the text from the selected bath to the drop down box
 		selectedImagePaths.setText(selectedImagePaths.getText() + "\r\n" + file.toString() + "\r\n -> " + file2.toString());
 		
+		// Once an output has been selected show the button to crop the image
 		cropImageButton.setVisible(true);
 		startingNumber.setVisible(true);
 	}
 	
 	/**
-	 * Action to crop the current images
+	 * Action to take all of the regions of interest from the preview image and export a series of crops from the selected TIFF stacks
+	 * This takes advantage of the two possible selection modes, manual and proximity
 	 * @param e
 	 */
 	private void cropImageAction(ActionEvent e) {
@@ -470,7 +477,9 @@ public class Display {
 	 * Reset all of the data in the program so that a new image can be cropped
 	 */
 	private void resetAll() {
+		// Calls the method in the Main class which builds a new display
 		Main.restartDisplay();
+		// Get rid of the current window
 		frame.dispose();
 	}
 	

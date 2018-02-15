@@ -85,8 +85,8 @@
   	        </classpath>
   	        <formatter type="brief" usefile="false" />
   	        <batchtest>
-  	            <fileset dir="${test.build.dir}" includes="**/*Test.java">
-  	            	<include name="DisplayImageTest.class"/>
+  	            <fileset dir="${test.build.dir}">
+  	            	<include name="**/*Test.java"/>
             	</fileset>
   	        </batchtest>
   	    </junit>

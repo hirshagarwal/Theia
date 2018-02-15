@@ -54,11 +54,14 @@ public class DisplayImage {
 		Point newPoint = new Point(x, y);
 		// Check if box is already selected
 		if(selectedNear.contains(newPoint)){
+			// If the point is already selected it needs to be removed
 			selectedNear.remove(newPoint);
 			// Generate a new image to remove points
 			generateCurrentImageProximity();
 		} else {
+			// Add a new point to the list and display the updated image
 			selectedNear.add(newPoint);
+			// Since there's only one square added just draw the new square on the existing image
 			redrawNewPoint(true, newPoint);
 		}
 	}
@@ -73,11 +76,13 @@ public class DisplayImage {
 		Point newPoint = new Point(x, y);
 		// Check if box is already selected
 		if(selectedFar.contains(newPoint)){
+			// Point has already been selected, so remove it
 			selectedFar.remove(newPoint);
 			// Generate a new image to remove points
 			generateCurrentImageProximity();
 		} else {
 			selectedFar.add(newPoint);
+			// Add the new point to the exiting image (rather than redrawing the whole thing)
 			redrawNewPoint(false, newPoint);
 		}
 		
@@ -106,7 +111,9 @@ public class DisplayImage {
 	 * @param y
 	 */
 	public void removeSelectPoint(int x, int y){
+		// Build an iterator for all of the selected crop points
 		Iterator<Point> cropIterator = selectedCrops.iterator();
+		// Iterate over all of the crop points
 		while(cropIterator.hasNext()){
 			Point currentPoint = cropIterator.next();
 			if(currentPoint.equals(new Point(x, y))){
@@ -146,10 +153,11 @@ public class DisplayImage {
 			overlayColor = new Color(50, 255, 0, 100);
 		}
 		
+		// Build a graphics 2D object
 		Graphics2D g2d = currentImage.createGraphics();
 		g2d.setColor(Color.WHITE);
-		g2d.setFont(new Font("TimesRoman", Font.BOLD, textSize));
 		
+		// Draw the new shaded region on top of the existing image
 		int cropSize = Display.cropSize;
 		g2d.setColor(overlayColor);
 		g2d.fillRect((int) newPoint.getX()*cropSize, (int) newPoint.getY()*cropSize, cropSize, cropSize);
@@ -169,6 +177,7 @@ public class DisplayImage {
 	
 	/**
 	 * Generate an output image with numbers on each selection region for a manual crop image (not proximity)
+	 * This is only used to export the image for reference at the end (after crops have been exported)
 	 * @return
 	 */
 	public BufferedImage generateManualOutputImage() {
@@ -242,7 +251,7 @@ public class DisplayImage {
 	}
 	
 	/***
-	 * Puts selection boxes on top of the image with an overlaid grid
+	 * Draws selection boxes from currently selected regions on top of the image with an overlaid grid
 	 * @return
 	 */
 	public BufferedImage generateCurrentImage(){
@@ -299,7 +308,6 @@ public class DisplayImage {
 			Point currentCropPoint = selectedCropsIterator.next();
 			g2d.setColor(Color.WHITE);
 			g2d.setFont(new Font("TimesRoman", Font.BOLD, textSize));
-//			g2d.drawString("" + calculateGridNumber(currentCropPoint), (int)currentCropPoint.getX()*100+textOffsetX, (int)currentCropPoint.getY()*100+textOffsetY);
 			g2d.setColor(overlayFar);
 			int cropSize = Display.cropSize;
 			g2d.fillRect((int)currentCropPoint.getX()*cropSize, (int)currentCropPoint.getY()*cropSize, cropSize, cropSize);
@@ -309,7 +317,7 @@ public class DisplayImage {
 	}
 	
 	/***
-	 * Lets the raw image file be reset
+	 * Allows the raw image file be reset
 	 * @param image
 	 */
 	public void setRawImage(BufferedImage image){

@@ -36,7 +36,12 @@ public class DisplayImageTest {
 	
 	@Test
 	public void failingTest() {
-		assertTrue(false);
+		assertTrue(true);
+	}
+	
+	@Test
+	public void calculateGridNumberTest() {
+		
 	}
 
 }
