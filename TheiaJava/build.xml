@@ -8,17 +8,21 @@
     <property name="debuglevel" value="source,lines,vars"/>
     <property name="target" value="1.8"/>
     <property name="source" value="1.8"/>
-  	<property name="test.src.dir" value="src/test"/>
-    <path id="JUnit 4.libraryclasspath">
+  	<property name="main.build.dir" value="build/main"/>
+ 	<property name="main.src.dir" value="src/com/hirshagarwal/theia/Main"/>
+  	<property name="test.src.dir" value="src/com/hirshagarwal/theia/test"/>
+  	<property name="test.build.dir" value="build/test"/>
+  	<path id="classpath.test">
         <pathelement location="../../../../.p2/pool/plugins/org.junit_4.12.0.v201504281640/junit.jar"/>
         <pathelement location="../../../../.p2/pool/plugins/org.hamcrest.core_1.3.0.v201303031735.jar"/>
+  		<pathelement location="${main.build.dir}"/>
     </path>
     <path id="opencv.userclasspath">
         <pathelement location="../../opencv/build/java/opencv-340.jar"/>
     </path>
     <path id="TheiaJava.classpath">
         <pathelement location="bin"/>
-        <path refid="JUnit 4.libraryclasspath"/>
+        <path refid="classpath.test"/>
         <pathelement location="opencv-340.jar"/>
         <path refid="opencv.userclasspath"/>
     </path>
@@ -41,11 +45,14 @@
         <delete dir="bin"/>
     </target>
     <target depends="clean" name="cleanall"/>
-    <target depends="build-subprojects,build-project" name="build"/>
+    <target depends="build-subprojects,build-project" name="build">
+    	<antcall target="test-build"/>
+   	</target>
     <target name="build-subprojects"/>
     <target depends="init" name="build-project">
         <echo message="${ant.project.name}: ${ant.file}"/>
-        <javac debug="true" debuglevel="${debuglevel}" destdir="bin" includeantruntime="false" source="${source}" target="${target}">
+    	<mkdir dir="${main.build.dir}"/>
+        <javac srcdir="${main.src.dir}" debug="true" debuglevel="${debuglevel}" destdir="${main.build.dir}" includeantruntime="false" source="${source}" target="${target}">
             <src path="src"/>
             <classpath refid="TheiaJava.classpath"/>
         </javac>
@@ -64,24 +71,27 @@
         <property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter"/>
         <antcall target="build"/>
     </target>
-  	<target name="test-compile" depends="build-project">
-  	    <mkdir dir="${test.build.dir}"/>
-  	    <javac srcdir="${test.src.dir}" destdir="${test.build.dir}" includeantruntime="false">
-  	        <classpath refid="classpath.test"/>
-  	    </javac>
-  	  </target>
-    <target description="unit tests" name="test">
-    	<junit printsummary="on" haltonfailure="yes" fork="true">
-    	        <classpath>
-    	          <path refid="classpath.test"/>
-    	          <pathelement location="${test.build.dir}"/>
-    	        </classpath>
-    	        <formatter type="brief" usefile="false" />
-    	        <batchtest>
-    	            <fileset dir="${test.src.dir}" includes="**/*DisplayImageTest.java" />
-    	        </batchtest>
-    	    </junit>
+    <target name="test-build">
+		<mkdir dir="${test.build.dir}"/>
+    	    <javac srcdir="${test.src.dir}" destdir="${test.build.dir}" includeantruntime="false">
+	        <classpath refid="classpath.test"/>
+    	</javac>
+    	<antcall target="test"/>
 	</target>
+  	<target name="test">
+  	    <junit printsummary="on" haltonfailure="yes" fork="true">
+  	        <classpath>
+  	          	<path refid="classpath.test"/>
+        		<pathelement location="${test.build.dir}"/>
+  	        </classpath>
+  	        <formatter type="brief" usefile="false" />
+  	        <batchtest>
+  	            <fileset dir="${test.build.dir}" includes="**/*Test.java">
+  	            	<include name="DisplayImageTest.class"/>
+            	</fileset>
+  	        </batchtest>
+  	    </junit>
+  	</target>
     <target name="Main">
         <java classname="com.hirshagarwal.theia.Main.Main" failonerror="true" fork="yes">
             <classpath refid="run.Main.classpath"/>
