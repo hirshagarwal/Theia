@@ -2,7 +2,6 @@ package com.hirshagarwal.theia.Main;
 
 import javax.swing.JFrame;
 import javax.swing.JTextField;
-import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -26,6 +25,7 @@ public class AutoThresholdDisplay {
 	private JFileChooser directoryChooser = new JFileChooser();
 	private File cropDirectory;
 	private ArrayList<ImageStack> images = new ArrayList<>();
+	private ArrayList<ThresholdImageStack> thresholdedImages = new ArrayList<>();
 
 	/**
 	 * Main display for the auto thresholding tool
@@ -104,14 +104,36 @@ public class AutoThresholdDisplay {
 		
 		// Read all of the images
 		readImages(filePaths);
+		// Threshold all of the images
+		thresholdImages();
 	}
 	
+	/**
+	 * Read all of the images from a list of file paths
+	 * @param filePaths
+	 */
 	private void readImages(ArrayList<Path> filePaths) {
 		for(int i=0; i<filePaths.size(); i++) {
 			ImageStack currentImage = new ImageStack();
 			currentImage.readFromFile(filePaths.get(i).toFile());
 			images.add(currentImage);
 		}
+	}
+	
+	/**
+	 * Threshold all of the images that were read from the folder
+	 */
+	private void thresholdImages() {
+		for(int i=0; i<images.size(); i++) {
+			// TODO: Add all of the images to threshold
+			ThresholdImageStack currentStack = new ThresholdImageStack(images.get(i), 50);
+			thresholdedImages.add(currentStack);
+		}
+	}
+	
+	@SuppressWarnings("unused")
+	private void outputThresholdImages() {
+		//TODO: Write method to put the thresholded images into a folder
 	}
 	
 }

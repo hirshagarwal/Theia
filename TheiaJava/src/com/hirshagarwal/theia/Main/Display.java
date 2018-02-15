@@ -253,9 +253,7 @@ public class Display {
 	}
 	
 	private void autoThresholdButtonAction(ActionEvent e) {
-		//TODO: Write auto threshold starter
-		AutoThresholdDisplay autoThresholdDisplay = new AutoThresholdDisplay();
-		
+		new AutoThresholdDisplay();
 	}
 	
 	/**

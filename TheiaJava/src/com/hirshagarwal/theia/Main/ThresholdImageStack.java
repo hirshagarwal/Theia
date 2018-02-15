@@ -6,10 +6,10 @@ import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Scalar;
 
-public class ThresholdImages {
+public class ThresholdImageStack {
 	
-	private BufferedImage rawImage;
-	private BufferedImage thresholdImage;
+	private ImageStack rawImage;
+	private ImageStack thresholdImageStack;
 	private CVHelper cvHelper = new CVHelper();
 	
 	/**
@@ -17,9 +17,12 @@ public class ThresholdImages {
 	 * @param inputImage
 	 * @param threshold
 	 */
-	public ThresholdImages(BufferedImage inputImage, int threshold) {
+	public ThresholdImageStack(ImageStack inputImage, int threshold) {
 		rawImage = inputImage;
-		thresholdImage = cvHelper.matToBufferedImage(thresholdImage(threshold));
+		for(int i=0; i<rawImage.size(); i++) {
+			// Iterate over the input images
+			thresholdImageStack.addToStack(thresholdImage(rawImage.getPage(i), threshold));
+		}
 	}
 
 	/**
@@ -28,11 +31,11 @@ public class ThresholdImages {
 	 * @param threshold
 	 * @return
 	 */
-	public Mat thresholdImage(int threshold) {
+	public BufferedImage thresholdImage(BufferedImage image, int threshold) {
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-		Mat newImage = cvHelper.bufferedImageToMat(rawImage);
+		Mat newImage = cvHelper.bufferedImageToMat(image);
 		Core.inRange(newImage, new Scalar(0, 0, 0), new Scalar(threshold, threshold, threshold), newImage);
-		return newImage;
+		return cvHelper.matToBufferedImage(newImage);
 	}
 
 	
@@ -40,7 +43,7 @@ public class ThresholdImages {
 	 * Get the original image
 	 * @return
 	 */
-	public BufferedImage getRawImage() {
+	public ImageStack getRawImageStack() {
 		return rawImage;
 	}
 	
@@ -48,8 +51,8 @@ public class ThresholdImages {
 	 * Get the thresholded image
 	 * @return
 	 */
-	public BufferedImage getImage() {
-		return thresholdImage;
+	public ImageStack getImageStack() {
+		return thresholdImageStack;
 	}
 	
 }

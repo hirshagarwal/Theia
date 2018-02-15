@@ -64,6 +64,15 @@ public class ImageStack {
 	}
 	
 	/**
+	 * Return a single page from the stack
+	 * @param i
+	 * @return BufferedImage
+	 */
+	public BufferedImage getPage(int i) {
+		return imageStack.get(i);
+	}
+	
+	/**
 	 * Take an Array List of points and export each crop from the current image stack.
 	 * @param crops
 	 */
@@ -103,6 +112,13 @@ public class ImageStack {
 	 */
 	public void setImageNumber(int num) {
 		imageNum = num;
+	}
+	
+	/**
+	 * Return the size of the current image stack
+	 */
+	public int size() {
+		return imageStack.size();
 	}
 	
 

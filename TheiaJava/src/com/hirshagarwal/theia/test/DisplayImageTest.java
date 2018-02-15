@@ -1,14 +1,6 @@
 package com.hirshagarwal.theia.test;
 
 import static org.junit.Assert.*;
-
-import java.awt.Point;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-
-import javax.imageio.ImageIO;
-
 import org.junit.Test;
 
 import com.hirshagarwal.theia.Main.DisplayImage;
