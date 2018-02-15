@@ -9,7 +9,6 @@ import java.util.Iterator;
 
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
-import javax.imageio.plugins.tiff.*;
 import javax.imageio.stream.ImageInputStream;
 
 
@@ -26,7 +25,11 @@ public class Main {
 	
 	// Start the interface
 	public static void main(String[] args){
-		mainDisplay = new Display();
+		setMainDisplay(new Display());
+	}
+	
+	public static void restartDisplay() {
+		setMainDisplay(new Display());
 	}
 	
 	
@@ -149,6 +152,16 @@ public class Main {
 	
 	public static ArrayList<String> getExportTitles() {
 		return exportTitles;
+	}
+
+
+	public static Display getMainDisplay() {
+		return mainDisplay;
+	}
+
+
+	public static void setMainDisplay(Display mainDisplay) {
+		Main.mainDisplay = mainDisplay;
 	}
 	
 

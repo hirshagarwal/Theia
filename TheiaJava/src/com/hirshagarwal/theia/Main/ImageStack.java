@@ -3,10 +3,8 @@ package com.hirshagarwal.theia.Main;
 import java.awt.Point;
 
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.ArrayList;
 
 import javax.imageio.IIOImage;
@@ -38,7 +36,6 @@ public class ImageStack {
 	public void export(ArrayList<Point> crops) {
 		// Iterate over all of crops
 		for(int i=0; i<crops.size(); i++) {
-			ByteArrayOutputStream os = new ByteArrayOutputStream();
 			ImageWriter writer = ImageIO.getImageWritersByFormatName("TIFF").next();
 			
 			try {

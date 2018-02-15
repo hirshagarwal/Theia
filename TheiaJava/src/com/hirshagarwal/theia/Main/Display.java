@@ -62,6 +62,7 @@ public class Display {
 	private JButton findPlaqueButton;
 	private JComboBox<String> selectionMode;
 	private JCheckBox guide;
+	private JButton resetAllButton;
 	
 	
 	private JFileChooser fc = new JFileChooser();
@@ -105,6 +106,7 @@ public class Display {
 		findPlaqueButton = new JButton("Find Plaque");
 		selectionMode = new JComboBox<String>();
 		guide = new JCheckBox("Guide");
+		resetAllButton = new JButton("Reset");
 		
 		selectionMode.addItem("Manual");
 		selectionMode.addItem("Proximity");
@@ -142,7 +144,8 @@ public class Display {
 		l.putConstraint(SpringLayout.EAST, selectionMode, 5, SpringLayout.EAST, contentPane);
 		l.putConstraint(SpringLayout.NORTH, guide, 5, SpringLayout.NORTH, contentPane);
 		l.putConstraint(SpringLayout.WEST, guide, 5, SpringLayout.EAST, selectImageButton);
-
+		l.putConstraint(SpringLayout.NORTH, resetAllButton, 5, SpringLayout.NORTH, contentPane);
+		l.putConstraint(SpringLayout.WEST, resetAllButton, 5, SpringLayout.EAST, guide);
 		
 		// Create the button action listeners  
 		ActionListener selectImageAction = new ActionListener(){
@@ -185,6 +188,11 @@ public class Display {
 				guideEnableAction(e);
 			}
 		};
+		ActionListener resetButton = new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				resetButtonAction(e);
+			}
+		};
 
 		selectImageButton.addActionListener(selectImageAction);
 		cropImageButton.addActionListener(cropImageAction);
@@ -194,6 +202,7 @@ public class Display {
 		removeCropImageButton.addActionListener(removeCropImage);
 		selectionMode.addActionListener(changeSelectionMode);
 		guide.addActionListener(guideEnable);		
+		resetAllButton.addActionListener(resetButton);
 		
 		// Add all of the components to the JFrame
 		frame.add(selectImageButton);
@@ -208,6 +217,7 @@ public class Display {
 //		frame.add(findPlaqueButton);
 		frame.add(selectionMode);
 		frame.add(guide);
+		frame.add(resetAllButton);
 		
 		// Choose which components to display
 		selectionMode.setVisible(false);
@@ -225,6 +235,18 @@ public class Display {
 		frame.setVisible(true);
 	}
 	
+	/**
+	 * Action to trigger the reset all method from the reset button
+	 * @param e
+	 */
+	private void resetButtonAction(ActionEvent e) {
+		resetAll();
+	}
+	
+	/**
+	 * Action to enable the guide and tell the user that it is enabled
+	 * @param e
+	 */
 	private void guideEnableAction(ActionEvent e) {
 		if(guide.isSelected()) {
 			// Guide mode is now enabled
@@ -289,13 +311,6 @@ public class Display {
 	private void removeImageToCropAction(ActionEvent e) {
 		selectFileInput.removeItemAt(selectFileInput.getSelectedIndex());
 		selectFileOutput.removeItemAt(selectFileOutput.getSelectedIndex());
-	}
-	
-	@Deprecated
-	@SuppressWarnings("unused")
-	private void autoCrop(ActionEvent e) {
-		AutomatedCrop autoCrop = new AutomatedCrop();
-		autoCrop.cropImage(Main.getCurrentImage());
 	}
 	
 	/**
@@ -454,9 +469,9 @@ public class Display {
 	/**
 	 * Reset all of the data in the program so that a new image can be cropped
 	 */
-	@SuppressWarnings("unused")
 	private void resetAll() {
-		// TODO: Create method to reset all of the data
+		Main.restartDisplay();
+		frame.dispose();
 	}
 	
 	/**
