@@ -15,6 +15,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -60,6 +61,8 @@ public class Display {
 	private JLabel selectedOutputLabel;
 	private JButton findPlaqueButton;
 	private JComboBox<String> selectionMode;
+	private JCheckBox guide;
+	
 	
 	private JFileChooser fc = new JFileChooser();
 	private JFileChooser directoryChooser = new JFileChooser();
@@ -101,6 +104,7 @@ public class Display {
 		selectedOutputLabel = new JLabel("Selected Output");
 		findPlaqueButton = new JButton("Find Plaque");
 		selectionMode = new JComboBox<String>();
+		guide = new JCheckBox("Guide");
 		
 		selectionMode.addItem("Manual");
 		selectionMode.addItem("Proximity");
@@ -136,6 +140,8 @@ public class Display {
 		l.putConstraint(SpringLayout.WEST, selectFileOutput, 5, SpringLayout.EAST, selectedOutputLabel);
 		l.putConstraint(SpringLayout.NORTH, selectionMode, 5, SpringLayout.SOUTH, imagePane);
 		l.putConstraint(SpringLayout.EAST, selectionMode, 5, SpringLayout.EAST, contentPane);
+		l.putConstraint(SpringLayout.NORTH, guide, 5, SpringLayout.NORTH, contentPane);
+		l.putConstraint(SpringLayout.WEST, guide, 5, SpringLayout.EAST, selectImageButton);
 
 		
 		// Create the button action listeners  
@@ -174,6 +180,11 @@ public class Display {
 				changeSelectionModeAction(e);
 			}
 		};
+		ActionListener guideEnable = new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				guideEnableAction(e);
+			}
+		};
 
 		selectImageButton.addActionListener(selectImageAction);
 		cropImageButton.addActionListener(cropImageAction);
@@ -182,7 +193,8 @@ public class Display {
 		selectFileInput.addActionListener(changeImageFocus);
 		removeCropImageButton.addActionListener(removeCropImage);
 		selectionMode.addActionListener(changeSelectionMode);
-				
+		guide.addActionListener(guideEnable);		
+		
 		// Add all of the components to the JFrame
 		frame.add(selectImageButton);
 		frame.add(selectCropImagesButton);
@@ -195,6 +207,7 @@ public class Display {
 		frame.add(selectedOutputLabel);
 //		frame.add(findPlaqueButton);
 		frame.add(selectionMode);
+		frame.add(guide);
 		
 		// Choose which components to display
 		selectionMode.setVisible(false);
@@ -207,8 +220,18 @@ public class Display {
 		startingNumber.setVisible(false);
 		selectFileInput.setVisible(false);
 		selectFileOutput.setVisible(false);
+		guide.setVisible(true);
 		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		frame.setVisible(true);
+	}
+	
+	private void guideEnableAction(ActionEvent e) {
+		if(guide.isSelected()) {
+			// Guide mode is now enabled
+			JOptionPane.showMessageDialog(frame, "Guide Mode Enabled - Textual guides will now explain each action that should be taken.\nFirst press the \"Select Image\" button and select a composited JPEG image for reference.");
+		} else {
+			// Guide mode is disabled - don't display anything
+		}
 	}
 	
 	/**
@@ -239,6 +262,13 @@ public class Display {
 			imagePaneSize.setSize(Main.getCurrentImage().getWidth()/scalingFactor, Main.getCurrentImage().getHeight()/scalingFactor);
 			displayImage = new DisplayImage(Main.getCurrentImage());
 			drawImage(Main.getCurrentImage());
+			
+			if(guide.isSelected()) {
+				// Explain next steps
+				JOptionPane.showMessageDialog(frame, "Now that an image has been selected regions of interested can be isolated by clicking on the corresponding boxes overlaid on the image."
+						+ "\nPress the \"Add Image to Crop\" button to select a TIFF stack to crop and a desired output location."
+						+ "\nThe textbox at the bottom can be used to set the desired starting number for labeling, the default is 0.");
+			}
 			
 			// Turn on all of the relevant components
 			selectCropImagesButton.setVisible(true);
@@ -295,6 +325,7 @@ public class Display {
 			String extension = filePath.substring(filePath.indexOf('.'), filePath.length());
 			try {
 				if(!(extension.equalsIgnoreCase(".tif") || extension.equalsIgnoreCase(".tiff"))){
+					JOptionPane.showMessageDialog(frame, "You must select a .tif or .tiff file");
 					throw new IOException("Selected file not TIFF");
 				}
 			} catch(IOException ex) {

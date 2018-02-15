@@ -2,7 +2,6 @@ package com.hirshagarwal.theia.Main;
 
 import java.awt.Point;
 import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferByte;
 import java.util.ArrayList;
 
 public class AutomatedCrop {
