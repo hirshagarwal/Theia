@@ -19,7 +19,8 @@ import javax.swing.JFileChooser;
 
 public class AutoThresholdDisplay {
 	
-	JFrame frame;
+	// Private fields
+	private JFrame frame;
 	private JTextField textField;
 	private JButton btnThresholdImages;
 	private JFileChooser directoryChooser = new JFileChooser();
@@ -32,16 +33,19 @@ public class AutoThresholdDisplay {
 	 * This tool allows a directory of TIFF files to be selected and automatically thresholded
 	 */
 	public AutoThresholdDisplay() {
+		// Set parameters about the frame
 		frame = new JFrame("Auto Threshold");
 		frame.setSize(500, 400);
 		SpringLayout springLayout = new SpringLayout();
 		frame.getContentPane().setLayout(springLayout);
 		
+		// Button that allows the user to select the folder containing input TIFF images
 		JButton btnSelectFolder = new JButton("Select Folder");
 		springLayout.putConstraint(SpringLayout.NORTH, btnSelectFolder, 9, SpringLayout.NORTH, frame.getContentPane());
 		springLayout.putConstraint(SpringLayout.EAST, btnSelectFolder, -121, SpringLayout.EAST, frame.getContentPane());
 		frame.getContentPane().add(btnSelectFolder);
 		
+		// Text field that displays the selected folder to the user
 		textField = new JTextField();
 		springLayout.putConstraint(SpringLayout.EAST, textField, -6, SpringLayout.WEST, btnSelectFolder);
 		springLayout.putConstraint(SpringLayout.NORTH, textField, 10, SpringLayout.NORTH, frame.getContentPane());
@@ -49,6 +53,7 @@ public class AutoThresholdDisplay {
 		frame.getContentPane().add(textField);
 		textField.setColumns(10);
 		
+		// Button that triggers the action to read and threshold the selected images
 		btnThresholdImages = new JButton("Threshold Images");
 		springLayout.putConstraint(SpringLayout.NORTH, btnThresholdImages, 16, SpringLayout.SOUTH, textField);
 		springLayout.putConstraint(SpringLayout.WEST, btnThresholdImages, 10, SpringLayout.WEST, frame.getContentPane());
@@ -69,6 +74,7 @@ public class AutoThresholdDisplay {
 	
 	/**
 	 * Select the directory containing all of the crops
+	 * This method also filters out and selects only TIFF images
 	 * @param e
 	 */
 	private void selectFolderButtonAction(ActionEvent e) {
@@ -91,7 +97,6 @@ public class AutoThresholdDisplay {
 		} catch(IOException error) {
 			error.printStackTrace();
 		}
-		System.out.println("First File Path: " + filePaths.get(0));
 		
 		// Iterate over files and take out any that are not .tiff
 		for(int i=0; i<filePaths.size(); i++) {
