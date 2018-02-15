@@ -63,6 +63,7 @@ public class Display {
 	private JComboBox<String> selectionMode;
 	private JCheckBox guide;
 	private JButton resetAllButton;
+	private JButton autoThresholdButton;
 	
 	
 	private JFileChooser fc = new JFileChooser();
@@ -107,6 +108,9 @@ public class Display {
 		selectionMode = new JComboBox<String>();
 		guide = new JCheckBox("Guide");
 		resetAllButton = new JButton("Reset");
+		autoThresholdButton = new JButton("Auto Threshold");
+		l.putConstraint(SpringLayout.NORTH, autoThresholdButton, 6, SpringLayout.SOUTH, cropImageButton);
+		l.putConstraint(SpringLayout.WEST, autoThresholdButton, 0, SpringLayout.WEST, selectImageButton);
 		
 		// Create the two possible selection modes, one for manual cropping and one for "proximity" - which allows for near and far crops to be selected
 		selectionMode.addItem("Manual");
@@ -147,6 +151,8 @@ public class Display {
 		l.putConstraint(SpringLayout.WEST, guide, 5, SpringLayout.EAST, selectImageButton);
 		l.putConstraint(SpringLayout.NORTH, resetAllButton, 5, SpringLayout.NORTH, contentPane);
 		l.putConstraint(SpringLayout.WEST, resetAllButton, 5, SpringLayout.EAST, guide);
+		l.putConstraint(SpringLayout.NORTH, autoCropButton, 10, SpringLayout.SOUTH, startingNumber);
+		l.putConstraint(SpringLayout.WEST, autoCropButton, 5, SpringLayout.WEST, contentPane);
 		
 		// Create the button action listeners  
 		ActionListener selectImageAction = new ActionListener(){
@@ -194,8 +200,13 @@ public class Display {
 				resetButtonAction(e);
 			}
 		};
+		ActionListener autoThresholdButtonListener = new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				autoThresholdButtonAction(e);
+			}
+		};
 		
-		// Bind componenets to action listeners
+		// Bind components to action listeners
 		selectImageButton.addActionListener(selectImageAction);
 		cropImageButton.addActionListener(cropImageAction);
 		selectCropImagesButton.addActionListener(selectImagesToCropAction);
@@ -207,18 +218,19 @@ public class Display {
 		resetAllButton.addActionListener(resetButton);
 		
 		// Add all of the components to the JFrame
-		frame.add(selectImageButton);
-		frame.add(selectCropImagesButton);
-		frame.add(cropImageButton);
-		frame.add(removeCropImageButton);
-		frame.add(startingNumber);
-		frame.add(selectFileInput);
-		frame.add(selectFileOutput);
-		frame.add(selectedImagesLabel);
-		frame.add(selectedOutputLabel);
-		frame.add(selectionMode);
-		frame.add(guide);
-		frame.add(resetAllButton);
+		frame.getContentPane().add(selectImageButton);
+		frame.getContentPane().add(selectCropImagesButton);
+		frame.getContentPane().add(cropImageButton);
+		frame.getContentPane().add(removeCropImageButton);
+		frame.getContentPane().add(startingNumber);
+		frame.getContentPane().add(selectFileInput);
+		frame.getContentPane().add(selectFileOutput);
+		frame.getContentPane().add(selectedImagesLabel);
+		frame.getContentPane().add(selectedOutputLabel);
+		frame.getContentPane().add(selectionMode);
+		frame.getContentPane().add(guide);
+		frame.getContentPane().add(resetAllButton);
+		frame.getContentPane().add(autoThresholdButton);
 		
 		// Choose which components to display
 		selectionMode.setVisible(false);
@@ -232,10 +244,17 @@ public class Display {
 		selectFileInput.setVisible(false);
 		selectFileOutput.setVisible(false);
 		guide.setVisible(true);
+		autoThresholdButton.setVisible(false);
 		
 		// Finally, setup the frame
 		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		frame.setVisible(true);
+	}
+	
+	private void autoThresholdButtonAction(ActionEvent e) {
+		//TODO: Write auto threshold starter
+		AutoThresholdDisplay autoThresholdDisplay = new AutoThresholdDisplay();
+		
 	}
 	
 	/**
@@ -372,6 +391,7 @@ public class Display {
 		// Once an output has been selected show the button to crop the image
 		cropImageButton.setVisible(true);
 		startingNumber.setVisible(true);
+		autoCropButton.setVisible(true);
 	}
 	
 	/**
@@ -558,7 +578,7 @@ public class Display {
 		});
 		
 		// Add the image pane to the frame
-		frame.add(imagePane);
+		frame.getContentPane().add(imagePane);
 		frame.setVisible(true);
 	}
 	
