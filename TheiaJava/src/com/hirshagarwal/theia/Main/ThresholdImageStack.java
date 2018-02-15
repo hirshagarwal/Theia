@@ -8,6 +8,7 @@ import org.opencv.core.Scalar;
 
 public class ThresholdImageStack {
 	
+	// Private Fields
 	private ImageStack rawImage;
 	private ImageStack thresholdImageStack;
 	private CVHelper cvHelper = new CVHelper();

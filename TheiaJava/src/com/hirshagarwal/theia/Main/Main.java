@@ -181,6 +181,10 @@ public class Main {
 		Main.exportTitles.clear();
 	}
 	
+	/**
+	 * Clear all of the static data held in the Main class
+	 * Useful for freeing memory and restarting the display class
+	 */
 	public static void clearData() {
 		Main.stacksToCrop.clear();
 		Main.exportDirectories.clear();

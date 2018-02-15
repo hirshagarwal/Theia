@@ -10,9 +10,13 @@ import javax.swing.JPanel;
  * @author Hirsh R. Agarwal
  *
  */
-@SuppressWarnings("serial")
+
 public class ImagePanel extends JPanel{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6534569916418284351L;
 	private Image image;
 	
 	public void paintComponent(Graphics g){
