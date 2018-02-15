@@ -216,6 +216,7 @@ public class Display {
 		selectionMode.addActionListener(changeSelectionMode);
 		guide.addActionListener(guideEnable);		
 		resetAllButton.addActionListener(resetButton);
+		autoThresholdButton.addActionListener(autoThresholdButtonListener);
 		
 		// Add all of the components to the JFrame
 		frame.getContentPane().add(selectImageButton);
@@ -391,7 +392,7 @@ public class Display {
 		// Once an output has been selected show the button to crop the image
 		cropImageButton.setVisible(true);
 		startingNumber.setVisible(true);
-		autoCropButton.setVisible(true);
+		autoThresholdButton.setVisible(true);
 	}
 	
 	/**

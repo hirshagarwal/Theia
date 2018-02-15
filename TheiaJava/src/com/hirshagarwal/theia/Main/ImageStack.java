@@ -6,11 +6,14 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
 import javax.imageio.ImageWriteParam;
 import javax.imageio.ImageWriter;
+import javax.imageio.stream.ImageInputStream;
 import javax.imageio.stream.ImageOutputStream;
 
 public class ImageStack {
@@ -19,6 +22,37 @@ public class ImageStack {
 	private int numPages = 0;
 	private int imageNum = 0;
 	
+	
+	/**
+	 * Read a tiff stack from a file into an ImageStack object
+	 * @param f
+	 */
+	public void readFromFile(File f) {
+		// Add a single file to the list of images to crop
+			try {
+				// Build the TIFF image reader
+				Iterator<ImageReader> tiffReaders = ImageIO.getImageReadersByFormatName("TIFF");
+				ImageInputStream imageStream = ImageIO.createImageInputStream(f);
+				
+				// Ensure TIFF reader is available
+				if(!tiffReaders.hasNext()) {
+					throw new UnsupportedOperationException("No TIFF  Reader Available");
+				}
+				
+				ImageReader tiffReader = tiffReaders.next();
+				tiffReader.setInput(imageStream);
+				int pages = tiffReader.getNumImages(true);
+								
+				// Read the stack of images
+				for(int i=0; i<pages; i++) {
+					BufferedImage newPage = tiffReader.read(i);
+					addToStack(newPage);
+				}
+				
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+	}
 	
 	/***
 	 * Add a new bufferedImage to the image stack
