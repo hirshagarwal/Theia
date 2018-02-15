@@ -4,4 +4,3 @@ jdk:
 before_script: cd TheiaJava
 script: 
   - ant build
-  - ant test
