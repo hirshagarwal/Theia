@@ -496,6 +496,10 @@ public class Display {
 	 * Reset all of the data in the program so that a new image can be cropped
 	 */
 	private void resetAll() {
+		// Reset all of the data held in the main class
+		imagesToCrop.clear();
+		outputDirectories.clear();
+		Main.clearData();
 		// Calls the method in the Main class which builds a new display
 		Main.restartDisplay();
 		// Get rid of the current window

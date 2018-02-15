@@ -173,5 +173,20 @@ public class Main {
 		Main.mainDisplay = mainDisplay;
 	}
 	
+	public static void clearStacksToCrop() {
+		Main.stacksToCrop.clear();
+	}
+	
+	public static void clearExportTitles() {
+		Main.exportTitles.clear();
+	}
+	
+	public static void clearData() {
+		Main.stacksToCrop.clear();
+		Main.exportDirectories.clear();
+		Main.exportTitles.clear();
+		Main.imageFile.flush();
+	}
+	
 
 }
