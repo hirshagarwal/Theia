@@ -26,9 +26,9 @@ public class CVHelper {
 	 */
 	public Mat bufferedImageToMat(BufferedImage image) {
 		Mat mat = new Mat(image.getHeight(), image.getWidth(), CvType.CV_8UC3);
-		  byte[] data = ((DataBufferByte) image.getRaster().getDataBuffer()).getData();
-		  mat.put(0, 0, data);
-		  return mat;
+		byte[] data = ((DataBufferByte) image.getRaster().getDataBuffer()).getData();
+		mat.put(0, 0, data);
+		return mat;
 	}
 	
 	/**
