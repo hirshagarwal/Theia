@@ -493,7 +493,9 @@ public class Display {
 			// Export the numbered image
 			Main.exportBufferedImage(displayImage.generateOutputImage());
 			
-		}		
+		}	
+		
+		JOptionPane.showMessageDialog(frame, "Export Complete");
 		
 	}
 	
