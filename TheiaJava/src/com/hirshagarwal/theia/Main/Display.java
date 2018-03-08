@@ -12,6 +12,8 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
@@ -358,7 +360,8 @@ public class Display {
 			
 			// Check to make sure that the file is a .tif/.tiff file
 			String filePath = fc.getSelectedFile().toString();
-			String extension = filePath.substring(filePath.indexOf('.'), filePath.length());
+			String extension = filePath.substring(filePath.lastIndexOf('.'), filePath.length());
+			System.out.println(extension);
 			try {
 				if(!(extension.equalsIgnoreCase(".tif") || extension.equalsIgnoreCase(".tiff"))){
 					JOptionPane.showMessageDialog(frame, "You must select a .tif or .tiff file");
@@ -433,7 +436,8 @@ public class Display {
 			
 			// Write the CSV File 
 			try {
-				PrintWriter pw = new PrintWriter(new File(outputDirectories.get(0) + "\\labels.csv"));
+				Path filePath = Paths.get(outputDirectories.get(0).getPath(), "labels.csv");
+				PrintWriter pw = new PrintWriter(new File(filePath.toString()));
 				StringBuilder sb = new StringBuilder();
 				for(int i=0; i<csv.size(); i++) {
 					sb.append(csv.get(i).toString());
@@ -473,7 +477,8 @@ public class Display {
 			}
 			// Write the CSV File 
 			try {
-				PrintWriter pw = new PrintWriter(new File(outputDirectories.get(0) + "\\labels.csv"));
+				Path filePath = Paths.get(outputDirectories.get(0).getPath(), "labels.csv");
+				PrintWriter pw = new PrintWriter(new File(filePath.toString()));
 				StringBuilder sb = new StringBuilder();
 				for(int i=0; i<csv.size(); i++) {
 					sb.append(csv.get(i).toString());

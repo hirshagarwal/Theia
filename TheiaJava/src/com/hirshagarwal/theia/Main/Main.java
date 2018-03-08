@@ -4,6 +4,8 @@ import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -85,7 +87,8 @@ public class Main {
 	 */
 	public static void exportBufferedImage(BufferedImage toExport) {
 		// Set the target directory and the target filename
-		File outputfile = new File(exportDirectories.get(0) + "\\selectedCrops.jpg");
+		Path filePath = Paths.get(exportDirectories.get(0).getPath(), "selectedCrops.jpg");
+		File outputfile = new File(filePath.toString());
 		try {
 			// Write the image to a jpeg file
 			ImageIO.write(toExport, "jpg", outputfile);

@@ -5,6 +5,9 @@ import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -83,7 +86,8 @@ public class ImageStack {
 			
 			try {
 				// Set the output parameters and file writer
-				ImageOutputStream output = ImageIO.createImageOutputStream(new File(Main.getExportDirectory(imageNum).toPath() + "\\" + Main.getExportTitle(imageNum) + (Main.getStartingNumber() + i) + ".tiff"));
+				Path filePath = Paths.get(Main.getExportDirectory(imageNum).getPath(), Main.getExportTitle(imageNum) + (Main.getStartingNumber() + i) + ".tiff");
+				ImageOutputStream output = ImageIO.createImageOutputStream(new File(filePath.toString()));
 				writer.setOutput(output);
 				ImageWriteParam params = writer.getDefaultWriteParam();
 				writer.prepareWriteSequence(null);
