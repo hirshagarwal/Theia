@@ -22,7 +22,8 @@ public class ThresholdImageStack {
 		rawImage = inputImage;
 		for(int i=0; i<rawImage.size(); i++) {
 			// Iterate over the input images
-			thresholdImageStack.addToStack(thresholdImage(rawImage.getPage(i), threshold));
+			//TODO: Update the 0 counter
+			thresholdImageStack.addToStack(thresholdImage(rawImage.getPage(0), threshold));
 		}
 	}
 
@@ -36,6 +37,7 @@ public class ThresholdImageStack {
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 		Mat newImage = cvHelper.bufferedImageToMat(image);
 		Core.inRange(newImage, new Scalar(0, 0, 0), new Scalar(threshold, threshold, threshold), newImage);
+		cvHelper.showMat(newImage);
 		return cvHelper.matToBufferedImage(newImage);
 	}
 

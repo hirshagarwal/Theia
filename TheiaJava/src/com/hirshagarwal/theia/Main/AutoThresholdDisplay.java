@@ -23,7 +23,7 @@ public class AutoThresholdDisplay {
 	private JFrame frame;
 	private JTextField textField;
 	private JButton btnThresholdImages;
-	private JFileChooser directoryChooser = new JFileChooser();
+	private JFileChooser directoryChooser = new JFileChooser("C:\\Users\\hirsh\\Documents\\Research\\Year 2");
 	private File cropDirectory;
 	private ArrayList<ImageStack> images = new ArrayList<>();
 	private ArrayList<ThresholdImageStack> thresholdedImages = new ArrayList<>();
@@ -132,6 +132,7 @@ public class AutoThresholdDisplay {
 		for(int i=0; i<images.size(); i++) {
 			// TODO: Add all of the images to threshold
 			ThresholdImageStack currentStack = new ThresholdImageStack(images.get(i), 50);
+			
 			thresholdedImages.add(currentStack);
 		}
 	}
