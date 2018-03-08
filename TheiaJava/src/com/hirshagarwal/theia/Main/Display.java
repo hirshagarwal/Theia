@@ -69,7 +69,7 @@ public class Display {
 	private JButton resetAllButton;
 	private JButton autoThresholdButton;
 	
-	
+	// Create the file choosers for selecting images and folders
 	private JFileChooser fc = new JFileChooser();
 	private JFileChooser directoryChooser = new JFileChooser();
 	
@@ -104,6 +104,7 @@ public class Display {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+		
 		// Set the file choosers
 		if (Main.DEBUGGING) {
 			fc = new JFileChooser("C:\\Users\\hirsh\\Documents\\Research\\Year 2\\Samples\\Sample 1");
