@@ -23,7 +23,7 @@ public class Main {
 	private static ArrayList<String> exportTitles = new ArrayList<>();
 	private static int startingNumber;
 	private static int cropSize = 100;
-	public static boolean DEBUGGING = true;
+	public static boolean DEBUGGING = false;
 	
 	/**
 	 * Create a display window
