@@ -101,7 +101,8 @@ public class DisplayImage {
 		// Check if box is already selected
 		if(selectedCrops.contains(newPoint)){
 			selectedCrops.remove(newPoint);
-			// TODO: Add a method to redraw the image when a selection point is removed
+			generateCurrentImage();
+			System.out.println(selectedCrops.toString());
 		} else {
 			selectedCrops.add(newPoint);	
 			redrawManualPoint(newPoint);
