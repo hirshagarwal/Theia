@@ -3,7 +3,7 @@
 Automated Image Processing
 
 ## General Information
-This program runs on the latest version of Java (JRE 9). It may execute on earlier versions of the Java Runtime Environment, however they are not necessarily fully supported.
+This program runs on the latest version of Java (JRE 9). Without Java 9 the program will run, but will fail to execute critical functions.
 
 ## Exporting Regions of Interest
 When the program starts only a single button is available. This allows for a flattened JPG image to be loaded, which is displayed for reference when selecting image regions. After an image is selected several other functions become available.
@@ -22,3 +22,5 @@ After regions are selected and the program is told to make crops several files w
 
 ## Known Issues
 In the event of a problem restarting the program is usually the best solution.
+### Program doesn't seem to save any files
+	The most likely situation is that an outdated version of Java is being used. Updating to Java 9 should resolve the issue.
