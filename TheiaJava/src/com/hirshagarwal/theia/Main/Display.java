@@ -12,6 +12,8 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
@@ -358,7 +360,8 @@ public class Display {
 			
 			// Check to make sure that the file is a .tif/.tiff file
 			String filePath = fc.getSelectedFile().toString();
-			String extension = filePath.substring(filePath.indexOf('.'), filePath.length());
+			String extension = filePath.substring(filePath.lastIndexOf('.'), filePath.length());
+			System.out.println(extension);
 			try {
 				if(!(extension.equalsIgnoreCase(".tif") || extension.equalsIgnoreCase(".tiff"))){
 					JOptionPane.showMessageDialog(frame, "You must select a .tif or .tiff file");
@@ -433,7 +436,8 @@ public class Display {
 			
 			// Write the CSV File 
 			try {
-				PrintWriter pw = new PrintWriter(new File(outputDirectories.get(0) + "\\labels.csv"));
+				Path filePath = Paths.get(outputDirectories.get(0).getPath(), "labels.csv");
+				PrintWriter pw = new PrintWriter(new File(filePath.toString()));
 				StringBuilder sb = new StringBuilder();
 				for(int i=0; i<csv.size(); i++) {
 					sb.append(csv.get(i).toString());
@@ -473,7 +477,8 @@ public class Display {
 			}
 			// Write the CSV File 
 			try {
-				PrintWriter pw = new PrintWriter(new File(outputDirectories.get(0) + "\\labels.csv"));
+				Path filePath = Paths.get(outputDirectories.get(0).getPath(), "labels.csv");
+				PrintWriter pw = new PrintWriter(new File(filePath.toString()));
 				StringBuilder sb = new StringBuilder();
 				for(int i=0; i<csv.size(); i++) {
 					sb.append(csv.get(i).toString());
@@ -488,7 +493,9 @@ public class Display {
 			// Export the numbered image
 			Main.exportBufferedImage(displayImage.generateOutputImage());
 			
-		}		
+		}	
+		
+		JOptionPane.showMessageDialog(frame, "Export Complete");
 		
 	}
 	
@@ -537,6 +544,7 @@ public class Display {
 		// Set image pane on-click actions
 		imagePane.addMouseListener(new MouseListener(){
 			public void mouseClicked(MouseEvent e){
+				// Manual Select
 				if(selectionMode.getSelectedIndex() == 0) {
 					// Gets the selected crop based on X and Y coordinates
 					int xLoc = ((int)(e.getX()/(cropSize/scalingFactor)));
@@ -545,6 +553,7 @@ public class Display {
 					displayImage.addSelectPoint(xLoc, yLoc);
 					redrawImage();
 				}
+				// Proximity Selection
 				if(selectionMode.getSelectedIndex() == 1) {
 					// Gets the selected crop based on X and Y coordinates
 					int xLoc = ((int)(e.getX()/(cropSize/scalingFactor)));
@@ -598,7 +607,8 @@ public class Display {
 			imagePane.setImage(tmp);
 			imagePane.repaint();
 		} else if (selectionMode.getSelectedIndex() == 0) {
-			BufferedImage currentImage = displayImage.generateCurrentImage();
+//			BufferedImage currentImage = displayImage.generateCurrentImage();
+			BufferedImage currentImage = displayImage.getCurrentImage();
 			// Scale down the image for display
 			Image tmp = currentImage.getScaledInstance((int)imagePaneSize.getWidth(), (int)imagePaneSize.getHeight(), Image.SCALE_SMOOTH);
 			imagePane.setImage(tmp);

@@ -26,8 +26,10 @@ public class DisplayImage {
 	private ArrayList<Point> selectedCrops = new ArrayList<Point>();
 	private ArrayList<Point> selectedNear = new ArrayList<Point>();
 	private ArrayList<Point> selectedFar = new ArrayList<Point>();
+	
 	// Number of boxes to be drawn on the image. This only affects the number drawn, not the size.
 	private int gridSize = 14;
+	
 	// Amount to offset text from corner
 	private int textOffsetX = 35;
 	private int textOffsetY = 60;
@@ -99,8 +101,11 @@ public class DisplayImage {
 		// Check if box is already selected
 		if(selectedCrops.contains(newPoint)){
 			selectedCrops.remove(newPoint);
+			generateCurrentImage();
+			System.out.println(selectedCrops.toString());
 		} else {
-			selectedCrops.add(newPoint);			
+			selectedCrops.add(newPoint);	
+			redrawManualPoint(newPoint);
 		}
 	}
 	
@@ -161,6 +166,23 @@ public class DisplayImage {
 		int cropSize = Display.cropSize;
 		g2d.setColor(overlayColor);
 		g2d.fillRect((int) newPoint.getX()*cropSize, (int) newPoint.getY()*cropSize, cropSize, cropSize);
+	}
+	
+	/**
+	 * Method to draw an extra point when in manual mode. Much faster than rendering the entire image.
+	 * @param newPoint
+	 */
+	private void redrawManualPoint(Point newPoint) {
+		// Set the overlay color
+		Color overlayColor = new Color(50, 255, 0, 100);
+		// Build a graphics 2D object
+		Graphics2D g2d = currentImage.createGraphics();
+		
+		// Draw the new shaded image
+		int cropSize = Display.cropSize;
+		g2d.setColor(overlayColor);
+		g2d.fillRect((int) newPoint.getX()*cropSize, (int) newPoint.getY()*cropSize, cropSize, cropSize);
+		
 	}
 	
 	/**
