@@ -537,6 +537,7 @@ public class Display {
 		// Set image pane on-click actions
 		imagePane.addMouseListener(new MouseListener(){
 			public void mouseClicked(MouseEvent e){
+				// Manual Select
 				if(selectionMode.getSelectedIndex() == 0) {
 					// Gets the selected crop based on X and Y coordinates
 					int xLoc = ((int)(e.getX()/(cropSize/scalingFactor)));
@@ -545,6 +546,7 @@ public class Display {
 					displayImage.addSelectPoint(xLoc, yLoc);
 					redrawImage();
 				}
+				// Proximity Selection
 				if(selectionMode.getSelectedIndex() == 1) {
 					// Gets the selected crop based on X and Y coordinates
 					int xLoc = ((int)(e.getX()/(cropSize/scalingFactor)));
@@ -598,7 +600,8 @@ public class Display {
 			imagePane.setImage(tmp);
 			imagePane.repaint();
 		} else if (selectionMode.getSelectedIndex() == 0) {
-			BufferedImage currentImage = displayImage.generateCurrentImage();
+//			BufferedImage currentImage = displayImage.generateCurrentImage();
+			BufferedImage currentImage = displayImage.getCurrentImage();
 			// Scale down the image for display
 			Image tmp = currentImage.getScaledInstance((int)imagePaneSize.getWidth(), (int)imagePaneSize.getHeight(), Image.SCALE_SMOOTH);
 			imagePane.setImage(tmp);
