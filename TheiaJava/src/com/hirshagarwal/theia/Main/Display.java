@@ -269,6 +269,13 @@ public class Display {
 		// Finally, setup the frame
 		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		frame.setVisible(true);
+		
+		// Check the current verion of Java
+		if(!System.getProperty("java.version").startsWith("9")) {
+			JOptionPane.showMessageDialog(frame, "Warning, old version of Java running. Please run with Java 9");
+		} else {
+			System.out.println(System.getProperty("java.version"));
+		}
 	}
 	
 	private void autoThresholdButtonAction(ActionEvent e) {
