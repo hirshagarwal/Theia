@@ -24,4 +24,4 @@ After regions are selected and the program is told to make crops several files w
 In the event of a problem restarting the program is usually the best solution.
 
 ### Program doesn't seem to save any files
-The most likely situation is that an outdated version of Java is being used. Updating to Java 9 should resolve the issue.
+The most likely situation is that an outdated version of Java is being used. Updating to Java 9 should resolve the issue. As of build 0.1.8 an outdated verion of Java should trigger a warning dialogue on program launch.
